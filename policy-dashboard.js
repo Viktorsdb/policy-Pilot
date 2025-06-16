@@ -4,7 +4,18 @@
 let policiesData = [];
 let matchedPolicies = [];
 let isLoading = false;
-const API_BASE_URL = 'http://localhost:8001/api/v1';
+
+// 动态API配置
+const getApiBaseUrl = () => {
+    // 如果是GitHub Pages环境
+    if (window.location.hostname.includes('github.io')) {
+        return 'https://policy-pilot-api.herokuapp.com/api/v1'; // 使用Heroku后端
+    }
+    // 本地开发环境
+    return 'http://localhost:8001/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // DOM 就绪后初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -305,11 +316,196 @@ async function loadPoliciesFromAPI() {
         
     } catch (error) {
         console.error('加载政策数据失败:', error);
-        showErrorState();
+        // 使用备用政策数据
+        loadFallbackPolicies();
+        showNotification('后端服务暂时不可用，显示备用政策数据', 'warning');
     } finally {
         isLoading = false;
         hideLoadingState();
     }
+}
+
+// 加载备用政策数据
+function loadFallbackPolicies() {
+    const fallbackPolicies = getFallbackPoliciesData();
+    displayAllPolicies(fallbackPolicies);
+    
+    // 更新统计信息
+    updateStatistics({
+        total_policies: fallbackPolicies.length,
+        active_policies: fallbackPolicies.length,
+        by_region: {
+            xuhui: fallbackPolicies.filter(p => p.region === '徐汇区').length,
+            shanghai: fallbackPolicies.filter(p => p.region === '上海市').length,
+            national: fallbackPolicies.filter(p => p.region === '全国').length
+        },
+        by_type: {
+            grant: fallbackPolicies.filter(p => p.support_type === 'grant').length,
+            subsidy: fallbackPolicies.filter(p => p.support_type === 'subsidy').length,
+            tax: fallbackPolicies.filter(p => p.support_type === 'tax').length,
+            voucher: fallbackPolicies.filter(p => p.support_type === 'voucher').length
+        }
+    });
+}
+
+// 获取备用政策数据
+function getFallbackPoliciesData() {
+    return [
+        {
+            policy_id: "XH2024001",
+            policy_name: "徐汇区关于推动人工智能产业高质量发展的若干意见",
+            region: "徐汇区",
+            support_type: "subsidy",
+            max_amount: 50000000,
+            deadline: "2024-12-31",
+            industry_tags: ["人工智能", "科技创新", "制造业"],
+            source_url: "https://www.xuhui.gov.cn/xxgk/portal/article/detail?id=8a4c0c0692292eab01934dd52e3d09b9",
+            requirements: [
+                "企业注册地在徐汇区",
+                "从事人工智能相关业务",
+                "企业信用状况良好",
+                "符合国家产业政策"
+            ],
+            target_industries: ["ai", "tech"],
+            target_scale: ["small", "medium", "large"],
+            target_rd: ["medium", "high"],
+            base_score: 0.85,
+            match_score: 0.85,
+            application_period: "全年申报",
+            approval_department: "徐汇区新型工业化推进办公室",
+            description: "支持人工智能领域创新主体开展关键技术攻关，最高可给予5000万元支持。",
+            last_updated: "2024-11-21",
+            recommendation: "该政策对AI企业支持力度大，建议符合条件的企业积极申报。"
+        },
+        {
+            policy_id: "XH2024002",
+            policy_name: "徐汇区关于推动具身智能产业发展的若干意见",
+            region: "徐汇区",
+            support_type: "subsidy",
+            max_amount: 20000000,
+            deadline: "2024-12-31",
+            industry_tags: ["具身智能", "机器人", "智能制造"],
+            source_url: "https://www.xuhui.gov.cn/xxgk/portal/article/detail?id=8a4c0c0692292eab01934dd6cfbd09bb",
+            requirements: [
+                "企业注册地在徐汇区",
+                "从事具身智能相关业务",
+                "企业信用状况良好"
+            ],
+            target_industries: ["ai", "robotics", "manufacturing"],
+            target_scale: ["small", "medium", "large"],
+            target_rd: ["medium", "high"],
+            base_score: 0.80,
+            match_score: 0.80,
+            application_period: "全年申报",
+            approval_department: "徐汇区新型工业化推进办公室",
+            description: "支持具身智能产业发展，对规模以上创新企业最高可给予2000万元经营奖励。",
+            last_updated: "2024-11-21",
+            recommendation: "适合机器人和智能制造企业申报，支持力度较大。"
+        },
+        {
+            policy_id: "XH2024003",
+            policy_name: "关于支持上海市生成式人工智能创新生态先导区的若干措施",
+            region: "徐汇区",
+            support_type: "subsidy",
+            max_amount: 50000000,
+            deadline: "2024-12-31",
+            industry_tags: ["生成式AI", "大模型", "创新生态"],
+            source_url: "https://www.xuhui.gov.cn/xxgk/portal/article/detail?id=8a4c0c0692292eab019384dc95a70aed",
+            requirements: [
+                "企业注册地在先导区",
+                "从事生成式AI相关业务",
+                "企业信用状况良好"
+            ],
+            target_industries: ["ai", "tech", "software"],
+            target_scale: ["small", "medium", "large"],
+            target_rd: ["high"],
+            base_score: 0.90,
+            match_score: 0.90,
+            application_period: "全年申报",
+            approval_department: "徐汇区新型工业化推进办公室",
+            description: "支持生成式AI技术研发创新，最高可给予5000万元支持。",
+            last_updated: "2024-12-02",
+            recommendation: "针对大模型和生成式AI企业的重点政策，支持力度最大。"
+        },
+        {
+            policy_id: "GJ2024001",
+            policy_name: "国家高新技术企业认定管理办法",
+            region: "全国",
+            support_type: "tax",
+            max_amount: 0,
+            deadline: "2024-12-31",
+            industry_tags: ["高新技术", "税收优惠", "企业认定"],
+            source_url: "http://www.most.gov.cn/",
+            requirements: [
+                "成立一年以上",
+                "拥有核心自主知识产权",
+                "研发投入占比不低于规定标准",
+                "高新技术产品收入占比60%以上"
+            ],
+            target_industries: ["ai", "tech", "biotech", "newenergy"],
+            target_scale: ["small", "medium", "large"],
+            target_rd: ["medium", "high"],
+            base_score: 0.80,
+            match_score: 0.80,
+            application_period: "每年4-6月",
+            approval_department: "科技部",
+            description: "享受15%企业所得税优惠税率，是最重要的税收优惠政策之一。",
+            last_updated: "2024-06-12",
+            recommendation: "所有符合条件的科技企业都应该申报，税收优惠显著。"
+        },
+        {
+            policy_id: "GJ2024002",
+            policy_name: "中小企业发展专项资金管理办法",
+            region: "全国",
+            support_type: "grant",
+            max_amount: 2000000,
+            deadline: "2024-10-15",
+            industry_tags: ["中小企业", "专精特新", "创新发展"],
+            source_url: "http://www.miit.gov.cn/",
+            requirements: [
+                "符合中小企业标准",
+                "具有自主知识产权",
+                "属于专精特新领域",
+                "具有良好发展前景"
+            ],
+            target_industries: ["tech", "manufacturing", "service"],
+            target_scale: ["small", "medium"],
+            target_rd: ["medium", "high"],
+            base_score: 0.78,
+            match_score: 0.78,
+            application_period: "每年7-10月",
+            approval_department: "工信部",
+            description: "支持中小企业创新发展和转型升级，最高可获得200万元资金支持。",
+            last_updated: "2024-06-12",
+            recommendation: "专精特新中小企业的重要资金来源，建议积极申报。"
+        },
+        {
+            policy_id: "SH2024001",
+            policy_name: "上海市科技创新券实施办法",
+            region: "上海市",
+            support_type: "voucher",
+            max_amount: 500000,
+            deadline: "2024-12-31",
+            industry_tags: ["科技创新", "创新券", "研发服务"],
+            source_url: "http://stcsm.sh.gov.cn/",
+            requirements: [
+                "注册地在上海市",
+                "符合中小微企业标准",
+                "具有研发需求",
+                "信用状况良好"
+            ],
+            target_industries: ["tech", "biotech", "newenergy"],
+            target_scale: ["small", "medium"],
+            target_rd: ["low", "medium"],
+            base_score: 0.75,
+            match_score: 0.75,
+            application_period: "全年申报",
+            approval_department: "上海市科委",
+            description: "为中小微企业提供科技创新券，用于购买研发服务，最高50万元。",
+            last_updated: "2024-06-12",
+            recommendation: "门槛较低，适合初创企业和中小微企业申报。"
+        }
+    ];
 }
 
 // 加载匹配的政策（基于企业信息）
@@ -376,8 +572,8 @@ async function loadMatchedPolicies(companyInfo) {
         console.error('政策匹配失败:', error);
         showNotification('政策匹配失败，将显示默认政策列表', 'warning');
         
-        // 如果匹配失败，回退到增强政策列表
-        await loadEnhancedPolicies();
+        // 如果匹配失败，使用备用政策数据
+        loadFallbackPolicies();
     }
 }
 
@@ -410,13 +606,24 @@ async function loadEnhancedPolicies() {
     } catch (error) {
         console.error('加载增强政策失败:', error);
         
-        // 最终回退到默认政策
-        const defaultResponse = await fetch(`${API_BASE_URL}/policies?limit=10`);
-        if (defaultResponse.ok) {
-            const defaultData = await defaultResponse.json();
-            displayAllPolicies(defaultData.data.policies);
-        } else {
-            showErrorState();
+        // 尝试加载基础政策列表
+        try {
+            const defaultResponse = await fetch(`${API_BASE_URL}/policies?limit=10`);
+            if (defaultResponse.ok) {
+                const defaultData = await defaultResponse.json();
+                if (defaultData.success && defaultData.data.policies) {
+                    displayAllPolicies(defaultData.data.policies);
+                    showNotification('已显示基础政策列表', 'info');
+                } else {
+                    throw new Error('基础政策API返回格式错误');
+                }
+            } else {
+                throw new Error('基础政策API调用失败');
+            }
+        } catch (fallbackError) {
+            console.error('所有API调用都失败:', fallbackError);
+            // 最终使用备用数据
+            loadFallbackPolicies();
         }
     }
 }

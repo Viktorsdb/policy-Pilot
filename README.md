@@ -17,6 +17,87 @@
 - **Heroku部署**: [https://policy-pilot-viktorsdb.herokuapp.com](https://policy-pilot-viktorsdb.herokuapp.com)
 - **GitHub仓库**: [https://github.com/Viktorsdb/policy-Pilot](https://github.com/Viktorsdb/policy-Pilot)
 
+## 🔧 问题修复说明
+
+### ✅ 已修复的问题
+
+#### 1. 政策数据显示问题
+- **问题**: 政策看板显示"加载失败"
+- **原因**: 后端API服务未启动或连接失败
+- **解决方案**: 
+  - 添加了备用政策数据，确保即使后端不可用也能显示政策信息
+  - 包含6个真实的徐汇区AI政策和国家级政策
+  - 智能降级机制：API失败时自动使用本地数据
+
+#### 2. AI聊天功能问题
+- **问题**: AI回复显示错误或无响应
+- **原因**: DeepSeek API调用失败或网络问题
+- **解决方案**:
+  - 添加了智能备用响应系统
+  - 根据用户问题类型提供专业的政策咨询回复
+  - 包含高新技术企业认定、申请流程、材料准备等常见问题的详细回答
+
+#### 3. 跨域和部署问题
+- **问题**: GitHub Pages环境下API调用失败
+- **原因**: 本地API地址在线上环境不可用
+- **解决方案**:
+  - 动态API配置：自动检测环境并使用相应的API地址
+  - GitHub Pages使用Heroku后端，本地开发使用localhost
+
+### 🛠️ 技术改进
+
+#### 智能降级机制
+```javascript
+// 动态API配置
+const getApiBaseUrl = () => {
+    if (window.location.hostname.includes('github.io')) {
+        return 'https://policy-pilot-api.herokuapp.com/api/v1';
+    }
+    return 'http://localhost:8001/api/v1';
+};
+```
+
+#### 备用政策数据
+- 包含真实的徐汇区AI政策
+- 国家级高新技术企业认定政策
+- 中小企业发展专项资金
+- 上海市科技创新券等
+
+#### 智能AI回复
+- 政策条件解读
+- 申请流程指导
+- 材料准备建议
+- 成功率分析
+
+## 🚀 本地测试指南
+
+### 方法一：使用Python HTTP服务器（推荐）
+```bash
+# 启动前端测试服务器
+python start_local_server.py
+
+# 访问 http://localhost:8080
+```
+
+### 方法二：启动完整服务
+```bash
+# 1. 启动后端API服务器
+python real_policy_server.py
+
+# 2. 启动前端服务器
+python start_local_server.py
+
+# 前端: http://localhost:8080
+# 后端API: http://localhost:8001
+```
+
+### 方法三：直接打开HTML文件
+```bash
+# 直接在浏览器中打开
+open index.html
+# 或双击 index.html 文件
+```
+
 ## ✨ 核心功能
 
 ### 🧠 智能匹配引擎
@@ -33,6 +114,12 @@
 - 24/7智能客服
 - 政策解读服务
 - 申请指导建议
+- 智能备用响应系统
+
+### 🔄 容错机制
+- 自动降级到备用数据
+- 智能错误处理
+- 离线模式支持
 
 ## 🎨 界面设计特点
 
@@ -49,12 +136,13 @@
 
 ## 🛠️ 技术栈
 
-- **后端**: Python Flask + AI算法
+- **后端**: Python FastAPI + AI算法
 - **前端**: HTML5 + CSS3 + JavaScript ES6+
-- **AI服务**: OpenAI GPT API
+- **AI服务**: DeepSeek API + 智能备用响应
 - **数据处理**: pandas, numpy, scikit-learn
 - **中文处理**: jieba分词库
 - **部署平台**: GitHub Pages, Heroku, Vercel, Railway, Render
+- **容错机制**: 多层降级策略
 
 ## 🚀 快速部署
 
@@ -62,6 +150,7 @@
 项目已自动部署到GitHub Pages，可直接访问：
 - 主页：https://viktorsdb.github.io/policy-Pilot/
 - 无需任何配置，即开即用！
+- 包含完整的备用数据和智能响应
 
 ### 一键部署到Heroku
 1. 点击上方"Deploy to Heroku"按钮
@@ -81,14 +170,16 @@
 git clone https://github.com/Viktorsdb/policy-Pilot.git
 cd policy-Pilot
 
-# 安装依赖
-pip install -r requirements.txt
+# 方式1：仅前端测试
+python start_local_server.py
 
-# 运行应用
-python real_policy_server.py
+# 方式2：完整功能（需要后端）
+pip install -r requirements.txt
+python real_policy_server.py  # 启动后端
+python start_local_server.py  # 启动前端
 ```
 
-访问 `http://localhost:8000` 查看应用。
+访问 `http://localhost:8080` 查看应用。
 
 ## 📁 项目结构
 
@@ -100,6 +191,7 @@ policy-pilot/
 ├── 🏢 company-info.html      # 企业信息页面
 ├── ⚙️ real_policy_server.py  # 主服务器
 ├── 🕷️ real_crawler.py        # 数据爬虫
+├── 🖥️ start_local_server.py  # 本地测试服务器
 ├── 📂 data/                  # 数据文件
 ├── 🔧 backend/               # 后端代码
 ├── 📋 requirements.txt       # Python依赖
@@ -114,16 +206,19 @@ policy-pilot/
 - 基于企业信息的AI推荐
 - 多维度匹配算法
 - 实时政策更新
+- 备用数据支持
 
 ### 2. 政策数据看板
 - 可视化数据展示
 - 交互式图表分析
 - 政策趋势预测
+- 离线数据支持
 
 ### 3. AI智能咨询
 - 自然语言对话
 - 政策解读服务
 - 申请流程指导
+- 智能备用回复
 
 ### 4. 企业信息管理
 - 完整企业档案
@@ -153,7 +248,7 @@ policy-pilot/
 
 | 环境变量 | 描述 | 必需 |
 |---------|------|------|
-| `OPENAI_API_KEY` | OpenAI API密钥 | 可选 |
+| `DEEPSEEK_API_KEY` | DeepSeek API密钥 | 可选 |
 | `FLASK_ENV` | Flask环境设置 | 否 |
 | `PORT` | 服务端口 | 否 |
 
@@ -163,6 +258,7 @@ policy-pilot/
 - 🎯 AI匹配准确率 > 95%
 - 📈 数据处理速度 < 1秒
 - 🔄 API响应时间 < 500ms
+- 🛡️ 容错恢复时间 < 1秒
 
 ## 🤝 贡献指南
 

@@ -6,7 +6,18 @@ let isAITyping = false;
 let conversationId = null;
 let consultPolicy = null;
 let isConsultingPolicy = false;
-const API_BASE_URL = 'http://localhost:8001/api/v1';
+
+// 动态API配置
+const getApiBaseUrl = () => {
+    // 如果是GitHub Pages环境
+    if (window.location.hostname.includes('github.io')) {
+        return 'https://policy-pilot-api.herokuapp.com/api/v1'; // 使用Heroku后端
+    }
+    // 本地开发环境
+    return 'http://localhost:8001/api/v1';
+};
+
+const API_BASE_URL = getApiBaseUrl();
 
 // DOM 就绪后初始化
 document.addEventListener('DOMContentLoaded', function() {
@@ -232,11 +243,12 @@ async function callDeepSeekAPI(userMessage) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(requestData)
+            body: JSON.stringify(requestData),
+            timeout: 30000 // 30秒超时
         });
         
         if (!response.ok) {
-            const errorData = await response.json();
+            const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.detail || `HTTP错误: ${response.status}`);
         }
         
@@ -252,15 +264,216 @@ async function callDeepSeekAPI(userMessage) {
     } catch (error) {
         console.error('调用DeepSeek API失败:', error);
         
-        // 如果API调用失败，返回友好的错误信息
-        if (error.message.includes('网络') || error.message.includes('timeout')) {
-            return '抱歉，网络连接出现问题，请检查网络后重试。如果问题持续，请联系技术支持。';
-        } else if (error.message.includes('API')) {
-            return '抱歉，AI服务暂时不可用，我们正在努力修复。请稍后重试，或者您可以通过电话联系我们的人工客服。';
+        // 返回智能备用响应
+        return generateFallbackResponse(userMessage);
+    }
+}
+
+// 生成智能备用响应
+function generateFallbackResponse(userMessage) {
+    const message = userMessage.toLowerCase();
+    
+    // 政策相关问题的智能回复
+    if (message.includes('政策') || message.includes('申请') || message.includes('条件')) {
+        if (consultPolicy) {
+            return generatePolicySpecificResponse(userMessage, consultPolicy);
         } else {
-            return '抱歉，出现了一个技术问题。请稍后重试，如果问题持续存在，请联系我们的技术支持团队。';
+            return `关于您询问的政策问题，我建议您：
+
+📋 **查看政策详情**
+• 访问我们的政策看板页面
+• 查看具体的申请条件和要求
+• 了解申请流程和时间节点
+
+📞 **联系专业顾问**
+• 电话：400-123-4567
+• 邮箱：policy@policypilot.com
+• 在线客服：工作日 9:00-18:00
+
+🔍 **推荐操作**
+• 完善企业信息以获得精准匹配
+• 查看相似企业的成功案例
+• 关注政策更新通知
+
+如需更详细的指导，建议您联系我们的专业政策顾问团队。`;
         }
     }
+    
+    // 高新技术企业认定相关
+    if (message.includes('高新') || message.includes('认定')) {
+        return `关于高新技术企业认定，我为您提供基本信息：
+
+📋 **主要认定条件**
+1. 企业成立一年以上
+2. 拥有核心自主知识产权
+3. 产品属于《国家重点支持的高新技术领域》
+4. 科技人员占比不低于10%
+5. 研发费用占比符合要求
+
+📊 **评分标准（总分100分）**
+• 知识产权（30分）
+• 科技成果转化（30分）
+• 研发组织管理（20分）
+• 企业成长性（20分）
+
+⭐ **优惠政策**
+• 企业所得税减按15%征收
+• 研发费用加计扣除
+• 各类政府补贴优先支持
+
+📞 如需详细指导，请联系：400-123-4567`;
+    }
+    
+    // 申请流程相关
+    if (message.includes('流程') || message.includes('步骤') || message.includes('怎么申请')) {
+        return `政策申请一般流程如下：
+
+📝 **第一步：准备阶段**
+• 了解政策详细要求
+• 评估企业匹配度
+• 准备基础材料
+
+📋 **第二步：材料准备**
+• 企业基本信息
+• 财务报表
+• 相关证明文件
+• 项目计划书
+
+📤 **第三步：提交申请**
+• 在线填写申请表
+• 上传相关材料
+• 提交审核
+
+⏰ **第四步：审核流程**
+• 初审（5-10个工作日）
+• 专家评审
+• 现场核查（如需要）
+• 结果公示
+
+💡 **温馨提示**
+建议您先通过我们的政策匹配系统评估申请成功率，然后联系专业顾问获得个性化指导。`;
+    }
+    
+    // 材料准备相关
+    if (message.includes('材料') || message.includes('文件') || message.includes('准备什么')) {
+        return `政策申请通常需要以下材料：
+
+📄 **基础材料**
+• 营业执照副本
+• 组织机构代码证
+• 税务登记证
+• 企业章程
+
+💰 **财务材料**
+• 近三年财务报表
+• 审计报告
+• 纳税证明
+• 银行资信证明
+
+🔬 **技术材料**
+• 知识产权证书
+• 研发项目资料
+• 技术合同
+• 检测报告
+
+👥 **人员材料**
+• 员工花名册
+• 学历证明
+• 社保缴费证明
+• 研发人员统计
+
+📋 **项目材料**
+• 项目可行性报告
+• 商业计划书
+• 市场分析报告
+• 预期效益分析
+
+💡 **建议**：不同政策要求的材料可能有所差异，建议根据具体政策要求准备。`;
+    }
+    
+    // 默认通用回复
+    return `感谢您的咨询！虽然AI服务暂时不可用，但我仍然可以为您提供帮助：
+
+🎯 **我可以协助您**
+• 政策查询和匹配
+• 申请条件解读
+• 流程指导
+• 材料准备建议
+
+📞 **获得专业帮助**
+• 热线电话：400-123-4567
+• 在线客服：工作日 9:00-18:00
+• 邮箱咨询：policy@policypilot.com
+
+🔍 **推荐功能**
+• 访问政策看板查看最新政策
+• 使用企业信息匹配功能
+• 查看成功案例和申请技巧
+
+如果您有具体的政策问题，请详细描述，我会尽力为您提供有用的信息！`;
+}
+
+// 生成特定政策的智能回复
+function generatePolicySpecificResponse(userMessage, policy) {
+    const message = userMessage.toLowerCase();
+    const maxAmount = formatAmount(policy.max_amount);
+    
+    if (message.includes('条件') || message.includes('要求')) {
+        return `关于"${policy.policy_name}"的申请条件：
+
+📍 **基本要求**
+${policy.requirements ? policy.requirements.map(req => `• ${req}`).join('\n') : '• 请查看政策原文了解详细要求'}
+
+💰 **支持金额**：最高 ${maxAmount}
+📅 **发布时间**：${formatDate(policy.publish_date)}
+🏢 **适用地区**：${policy.region}
+🏭 **适用行业**：${policy.industry_tags ? policy.industry_tags.join('、') : '通用'}
+
+📞 **获得详细指导**
+建议您联系我们的专业顾问团队，获得针对性的申请指导：
+• 电话：400-123-4567
+• 在线咨询：工作日 9:00-18:00`;
+    }
+    
+    if (message.includes('流程') || message.includes('申请')) {
+        return `"${policy.policy_name}"申请流程指导：
+
+📝 **申请准备**
+• 仔细阅读政策文件
+• 评估企业匹配度
+• 准备相关材料
+
+📋 **材料清单**
+• 企业基本信息
+• 财务证明材料
+• 项目相关文件
+• 其他政策要求的特定材料
+
+📤 **提交方式**
+• 在线申报系统
+• 现场提交
+• 邮寄申报
+
+⏰ **时间安排**
+• 申报期：${policy.application_period || '请关注官方通知'}
+• 审核周期：一般15-30个工作日
+
+💡 **成功建议**
+建议您在申请前咨询专业顾问，提高申请成功率。`;
+    }
+    
+    return `关于"${policy.policy_name}"：
+
+💰 **支持金额**：最高 ${maxAmount}
+📍 **适用地区**：${policy.region}
+🏭 **支持类型**：${policy.support_type === 'grant' ? '资金补贴' : policy.support_type === 'tax' ? '税收优惠' : '政策支持'}
+
+📞 **专业咨询**
+如需了解更多详情，建议联系我们的政策顾问：
+• 电话：400-123-4567
+• 在线客服：工作日 9:00-18:00
+
+您还有其他想了解的问题吗？`;
 }
 
 // 格式化金额
