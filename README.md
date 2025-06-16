@@ -5,9 +5,16 @@
 
 基于AI的智能政策匹配平台，帮助企业发现适合的政策机会。本项目提供现代化、专业的企业级政策匹配服务，支持多种云平台一键部署。
 
-## 🚀 在线体验
+## 🌐 在线体验
 
-- **演示地址**: [https://policy-pilot-viktorsdb.herokuapp.com](https://policy-pilot-viktorsdb.herokuapp.com)
+### 🎯 直接访问（推荐）
+- **🔗 在线演示**: [https://viktorsdb.github.io/policy-pilot/](https://viktorsdb.github.io/policy-pilot/)
+- **📊 政策看板**: [https://viktorsdb.github.io/policy-pilot/policy-dashboard.html](https://viktorsdb.github.io/policy-pilot/policy-dashboard.html)
+- **🤖 AI聊天**: [https://viktorsdb.github.io/policy-pilot/ai-chat.html](https://viktorsdb.github.io/policy-pilot/ai-chat.html)
+- **🏢 企业信息**: [https://viktorsdb.github.io/policy-pilot/company-info.html](https://viktorsdb.github.io/policy-pilot/company-info.html)
+
+### 🚀 云平台部署
+- **Heroku部署**: [https://policy-pilot-viktorsdb.herokuapp.com](https://policy-pilot-viktorsdb.herokuapp.com)
 - **GitHub仓库**: [https://github.com/Viktorsdb/policy-pilot](https://github.com/Viktorsdb/policy-pilot)
 
 ## ✨ 核心功能
@@ -47,9 +54,14 @@
 - **AI服务**: OpenAI GPT API
 - **数据处理**: pandas, numpy, scikit-learn
 - **中文处理**: jieba分词库
-- **部署平台**: Heroku, Vercel, Railway, Render
+- **部署平台**: GitHub Pages, Heroku, Vercel, Railway, Render
 
 ## 🚀 快速部署
+
+### 🌐 GitHub Pages（推荐）
+项目已自动部署到GitHub Pages，可直接访问：
+- 主页：https://viktorsdb.github.io/policy-pilot/
+- 无需任何配置，即开即用！
 
 ### 一键部署到Heroku
 1. 点击上方"Deploy to Heroku"按钮

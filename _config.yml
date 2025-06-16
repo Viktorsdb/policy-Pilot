@@ -1,0 +1,48 @@
+# GitHub Pages配置文件
+title: "PolicyPilot - AI政策匹配平台"
+description: "基于AI的智能政策匹配平台，帮助企业发现适合的政策机会"
+url: "https://viktorsdb.github.io"
+baseurl: "/policy-pilot"
+
+# 构建设置
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# 插件
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# 排除文件
+exclude:
+  - README.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .bundle
+  - .sass-cache
+  - .jekyll-cache
+  - .jekyll-metadata
+  - __pycache__
+  - "*.py"
+  - requirements.txt
+  - Procfile
+  - Dockerfile
+  - docker-compose.yml
+  - .github
+  - backend
+
+# 包含文件
+include:
+  - _pages
+
+# 默认设置
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default" 
