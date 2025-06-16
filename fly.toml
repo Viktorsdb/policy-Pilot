@@ -1,0 +1,31 @@
+app = "policy-pilot-backend"
+primary_region = "nrt"
+
+[build]
+
+[env]
+  HOST = "0.0.0.0"
+  PORT = "8080"
+  PYTHON_VERSION = "3.11.5"
+  DEEPSEEK_API_KEY = "sk-e51ff57edcae48a2b5b462d9f8abcd49"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[http_service.checks]]
+  interval = "15s"
+  grace_period = "5s"
+  method = "GET"
+  path = "/api/v1/health"
+  protocol = "http"
+  timeout = "10s"
+
+[[vm]]
+  cpu_kind = "shared"
+  cpus = 1
+  memory_mb = 256 

@@ -3,7 +3,7 @@
   "description": "基于AI的智能政策匹配平台，帮助企业发现适合的政策机会",
   "repository": "https://github.com/Viktorsdb/policy-Pilot",
   "logo": "https://viktorsdb.github.io/policy-Pilot/favicon.ico",
-  "keywords": ["ai", "policy", "matching", "fastapi", "python"],
+  "keywords": ["ai", "policy", "matching", "fastapi", "python", "heroku"],
   "stack": "heroku-22",
   "buildpacks": [
     {
@@ -19,11 +19,16 @@
   "env": {
     "DEEPSEEK_API_KEY": {
       "description": "DeepSeek API密钥（可选，用于AI聊天功能）",
-      "required": false
+      "required": false,
+      "value": "sk-e51ff57edcae48a2b5b462d9f8abcd49"
     },
     "HOST": {
       "description": "服务器主机地址",
       "value": "0.0.0.0"
+    },
+    "PORT": {
+      "description": "服务器端口",
+      "value": "8001"
     },
     "PYTHON_VERSION": {
       "description": "Python版本",
@@ -32,6 +37,8 @@
   },
   "addons": [],
   "scripts": {
-    "postdeploy": "echo '部署完成！PolicyPilot AI政策匹配平台已启动。'"
-  }
+    "postdeploy": "echo '✅ PolicyPilot AI政策匹配平台部署完成！后端服务已启动。'"
+  },
+  "success_url": "/api/v1/health",
+  "website": "https://viktorsdb.github.io/policy-Pilot/"
 } 

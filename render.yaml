@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: policy-pilot-backend
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python real_policy_server.py
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.5
+      - key: HOST
+        value: 0.0.0.0
+      - key: PORT
+        value: 10000
+      - key: DEEPSEEK_API_KEY
+        value: sk-e51ff57edcae48a2b5b462d9f8abcd49
+    healthCheckPath: /api/v1/health
+    autoDeploy: true
+    branch: main 

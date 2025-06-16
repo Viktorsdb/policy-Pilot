@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPilot 后端部署 - 一键部署到云平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .deploy-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .deploy-header {
+            margin-bottom: 30px;
+        }
+        
+        .deploy-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: white;
+            font-size: 36px;
+        }
+        
+        .deploy-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 10px;
+        }
+        
+        .deploy-subtitle {
+            color: #6b7280;
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+        
+        .deploy-options {
+            display: grid;
+            gap: 20px;
+            margin: 40px 0;
+        }
+        
+        .deploy-option {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            padding: 20px;
+            border: 2px solid #e5e7eb;
+            border-radius: 16px;
+            text-decoration: none;
+            color: inherit;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .deploy-option:hover {
+            border-color: #667eea;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05), rgba(118, 75, 162, 0.05));
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(102, 126, 234, 0.2);
+        }
+        
+        .option-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .option-content {
+            flex: 1;
+            text-align: left;
+        }
+        
+        .option-title {
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 6px;
+            font-size: 1.1rem;
+        }
+        
+        .option-desc {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+        
+        .option-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .deploy-note {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(37, 99, 235, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .deploy-note h4 {
+            color: #1f2937;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .deploy-note p {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        
+        .deploy-note ul {
+            color: #6b7280;
+            margin-left: 20px;
+        }
+        
+        .deploy-note li {
+            margin-bottom: 5px;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #6b7280;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+        }
+        
+        .back-btn:hover {
+            background: #f1f5f9;
+            border-color: #d1d5db;
+            color: #374151;
+        }
+        
+        @media (max-width: 768px) {
+            .deploy-container {
+                padding: 30px 20px;
+            }
+            
+            .deploy-title {
+                font-size: 1.5rem;
+            }
+            
+            .deploy-option {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+            
+            .option-content {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="deploy-container">
+        <div class="deploy-header">
+            <div class="deploy-icon">
+                <i class="fas fa-rocket"></i>
+            </div>
+            <h1 class="deploy-title">部署PolicyPilot后端服务</h1>
+            <p class="deploy-subtitle">
+                选择一个云平台来部署后端服务，部署完成后其他用户就可以正常使用完整功能了
+            </p>
+        </div>
+        
+        <div class="deploy-options">
+            <a href="https://heroku.com/deploy?template=https://github.com/Viktorsdb/policy-Pilot" 
+               class="deploy-option" target="_blank">
+                <div class="option-icon">
+                    <i class="fab fa-heroku"></i>
+                </div>
+                <div class="option-content">
+                    <div class="option-title">Heroku 部署 <span class="option-badge">推荐</span></div>
+                    <div class="option-desc">免费额度充足，部署简单，自动扩容，适合生产环境</div>
+                </div>
+            </a>
+            
+            <a href="https://railway.app/template/your-template" 
+               class="deploy-option" target="_blank">
+                <div class="option-icon">
+                    <i class="fas fa-train"></i>
+                </div>
+                <div class="option-content">
+                    <div class="option-title">Railway 部署</div>
+                    <div class="option-desc">现代化平台，GitHub集成，自动部署，开发者友好</div>
+                </div>
+            </a>
+            
+            <a href="https://render.com/deploy" 
+               class="deploy-option" target="_blank">
+                <div class="option-icon">
+                    <i class="fas fa-cloud"></i>
+                </div>
+                <div class="option-content">
+                    <div class="option-title">Render 部署</div>
+                    <div class="option-desc">免费SSL证书，全球CDN，自动备份，企业级可靠性</div>
+                </div>
+            </a>
+        </div>
+        
+        <div class="deploy-note">
+            <h4><i class="fas fa-info-circle"></i> 部署说明</h4>
+            <p><strong>推荐使用Heroku部署：</strong></p>
+            <ul>
+                <li>点击"Heroku部署"按钮</li>
+                <li>登录或注册Heroku账户（完全免费）</li>
+                <li>填写应用名称（可选，系统会自动生成）</li>
+                <li>点击"Deploy app"按钮，等待2-3分钟</li>
+                <li>部署完成后，复制应用URL并更新前端配置</li>
+            </ul>
+            <p><strong>注意：</strong>Heroku免费账户每月有550小时免费使用时间，足够个人和小团队使用。</p>
+        </div>
+        
+        <a href="index.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i>
+            返回首页
+        </a>
+    </div>
+    
+    <script>
+        // 检查部署状态
+        function checkDeploymentStatus() {
+            const herokuUrl = 'https://policy-pilot-viktorsdb.herokuapp.com/api/v1/health';
+            
+            fetch(herokuUrl)
+                .then(response => {
+                    if (response.ok) {
+                        showSuccessMessage();
+                    }
+                })
+                .catch(error => {
+                    console.log('后端服务尚未部署或正在启动中');
+                });
+        }
+        
+        function showSuccessMessage() {
+            const successDiv = document.createElement('div');
+            successDiv.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #10b981, #059669);
+                color: white;
+                padding: 16px 24px;
+                border-radius: 12px;
+                box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+                z-index: 1000;
+                font-weight: 500;
+            `;
+            successDiv.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                后端服务已正常运行！
+            `;
+            document.body.appendChild(successDiv);
+            
+            setTimeout(() => {
+                successDiv.remove();
+            }, 5000);
+        }
+        
+        // 页面加载时检查状态
+        document.addEventListener('DOMContentLoaded', checkDeploymentStatus);
+    </script>
+</body>
+</html> 

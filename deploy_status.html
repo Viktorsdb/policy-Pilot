@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyPilot 部署状态 - 后端服务部署情况</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .deployment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+        
+        .deployment-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+        
+        .deployment-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .platform-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .platform-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            color: white;
+        }
+        
+        .heroku { background: linear-gradient(135deg, #430098, #6c5ce7); }
+        .render { background: linear-gradient(135deg, #46e3b7, #00d2d3); }
+        .railway { background: linear-gradient(135deg, #0f0f23, #6c5ce7); }
+        .fly { background: linear-gradient(135deg, #8b5cf6, #a855f7); }
+        
+        .platform-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+        }
+        
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .status-online { background: #10b981; }
+        .status-offline { background: #ef4444; }
+        .status-unknown { background: #f59e0b; }
+        
+        .status-text {
+            font-weight: 500;
+        }
+        
+        .deployment-info {
+            margin-bottom: 20px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        
+        .info-label {
+            color: #6b7280;
+        }
+        
+        .info-value {
+            color: #1f2937;
+            font-weight: 500;
+        }
+        
+        .deployment-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: #f8fafc;
+            color: #6b7280;
+            border: 1px solid #e5e7eb;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .summary-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-item {
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            border-radius: 15px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            color: #6b7280;
+            font-size: 0.9rem;
+        }
+        
+        .recommended-url {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+            border: 2px solid #10b981;
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .recommended-url h3 {
+            color: #059669;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .url-display {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-family: 'Courier New', monospace;
+            color: #1f2937;
+            word-break: break-all;
+            margin-bottom: 15px;
+        }
+        
+        .copy-btn {
+            background: #10b981;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        @media (max-width: 768px) {
+            .deployment-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .deployment-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-rocket"></i> PolicyPilot 部署状态</h1>
+            <p>后端服务在各个云平台的部署情况</p>
+        </div>
+        
+        <div class="deployment-grid">
+            <!-- Heroku -->
+            <div class="deployment-card">
+                <div class="platform-header">
+                    <div class="platform-icon heroku">
+                        <i class="fab fa-heroku"></i>
+                    </div>
+                    <div class="platform-name">Heroku</div>
+                </div>
+                
+                <div class="status-indicator">
+                    <div class="status-dot status-unknown" id="heroku-status"></div>
+                    <span class="status-text" id="heroku-text">检查中...</span>
+                </div>
+                
+                <div class="deployment-info">
+                    <div class="info-item">
+                        <span class="info-label">应用名称:</span>
+                        <span class="info-value">policy-pilot-viktorsdb</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">区域:</span>
+                        <span class="info-value">美国</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">计划:</span>
+                        <span class="info-value">免费版</span>
+                    </div>
+                </div>
+                
+                <div class="deployment-actions">
+                    <a href="https://heroku.com/deploy?template=https://github.com/Viktorsdb/policy-Pilot" 
+                       class="action-btn btn-primary" target="_blank">
+                        <i class="fas fa-rocket"></i>
+                        部署
+                    </a>
+                    <a href="https://policy-pilot-viktorsdb.herokuapp.com/api/v1/health" 
+                       class="action-btn btn-secondary" target="_blank">
+                        <i class="fas fa-external-link-alt"></i>
+                        测试
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Render -->
+            <div class="deployment-card">
+                <div class="platform-header">
+                    <div class="platform-icon render">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <div class="platform-name">Render</div>
+                </div>
+                
+                <div class="status-indicator">
+                    <div class="status-dot status-offline" id="render-status"></div>
+                    <span class="status-text" id="render-text">未部署</span>
+                </div>
+                
+                <div class="deployment-info">
+                    <div class="info-item">
+                        <span class="info-label">服务类型:</span>
+                        <span class="info-value">Web Service</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">区域:</span>
+                        <span class="info-value">自动选择</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">计划:</span>
+                        <span class="info-value">免费版</span>
+                    </div>
+                </div>
+                
+                <div class="deployment-actions">
+                    <a href="https://render.com/deploy?repo=https://github.com/Viktorsdb/policy-Pilot" 
+                       class="action-btn btn-primary" target="_blank">
+                        <i class="fas fa-rocket"></i>
+                        部署
+                    </a>
+                    <a href="render_deploy_guide.html" 
+                       class="action-btn btn-secondary">
+                        <i class="fas fa-book"></i>
+                        部署指南
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Railway -->
+            <div class="deployment-card">
+                <div class="platform-header">
+                    <div class="platform-icon railway">
+                        <i class="fas fa-train"></i>
+                    </div>
+                    <div class="platform-name">Railway</div>
+                </div>
+                
+                <div class="status-indicator">
+                    <div class="status-dot status-offline" id="railway-status"></div>
+                    <span class="status-text" id="railway-text">未部署</span>
+                </div>
+                
+                <div class="deployment-info">
+                    <div class="info-item">
+                        <span class="info-label">服务类型:</span>
+                        <span class="info-value">Web App</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">区域:</span>
+                        <span class="info-value">美国西部</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">计划:</span>
+                        <span class="info-value">免费版</span>
+                    </div>
+                </div>
+                
+                <div class="deployment-actions">
+                    <a href="https://railway.app/template/your-template" 
+                       class="action-btn btn-primary" target="_blank">
+                        <i class="fas fa-rocket"></i>
+                        部署
+                    </a>
+                    <a href="#" class="action-btn btn-secondary" onclick="alert('请先部署服务')">
+                        <i class="fas fa-external-link-alt"></i>
+                        测试
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Fly.io -->
+            <div class="deployment-card">
+                <div class="platform-header">
+                    <div class="platform-icon fly">
+                        <i class="fas fa-paper-plane"></i>
+                    </div>
+                    <div class="platform-name">Fly.io</div>
+                </div>
+                
+                <div class="status-indicator">
+                    <div class="status-dot status-offline" id="fly-status"></div>
+                    <span class="status-text" id="fly-text">未部署</span>
+                </div>
+                
+                <div class="deployment-info">
+                    <div class="info-item">
+                        <span class="info-label">应用名称:</span>
+                        <span class="info-value">policy-pilot-backend</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">区域:</span>
+                        <span class="info-value">东京</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">计划:</span>
+                        <span class="info-value">免费版</span>
+                    </div>
+                </div>
+                
+                <div class="deployment-actions">
+                    <a href="https://fly.io/docs/hands-on/install-flyctl/" 
+                       class="action-btn btn-primary" target="_blank">
+                        <i class="fas fa-download"></i>
+                        安装CLI
+                    </a>
+                    <a href="#" class="action-btn btn-secondary" onclick="alert('需要使用Fly CLI部署')">
+                        <i class="fas fa-terminal"></i>
+                        CLI部署
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="summary-card">
+            <h2>部署总结</h2>
+            
+            <div class="summary-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="online-count">0</div>
+                    <div class="stat-label">在线服务</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="total-platforms">4</div>
+                    <div class="stat-label">支持平台</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">免费部署</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">服务可用</div>
+                </div>
+            </div>
+            
+            <div class="recommended-url" id="recommended-section" style="display: none;">
+                <h3><i class="fas fa-star"></i> 推荐使用的API地址</h3>
+                <div class="url-display" id="recommended-api-url">
+                    检测中...
+                </div>
+                <button class="copy-btn" onclick="copyApiUrl()">
+                    <i class="fas fa-copy"></i> 复制地址
+                </button>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <a href="index.html" class="action-btn btn-secondary" style="display: inline-flex;">
+                    <i class="fas fa-arrow-left"></i>
+                    返回首页
+                </a>
+                <a href="deploy_backend.html" class="action-btn btn-primary" style="display: inline-flex; margin-left: 10px;">
+                    <i class="fas fa-rocket"></i>
+                    一键部署
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 检查各个平台的服务状态
+        const platforms = [
+            {
+                name: 'heroku',
+                url: 'https://policy-pilot-viktorsdb.herokuapp.com/api/v1/health',
+                apiUrl: 'https://policy-pilot-viktorsdb.herokuapp.com/api/v1'
+            }
+            // 其他平台的URL在部署后添加
+        ];
+        
+        let onlineServices = [];
+        
+        async function checkPlatformStatus(platform) {
+            try {
+                const response = await fetch(platform.url, { 
+                    method: 'GET',
+                    timeout: 10000 
+                });
+                
+                if (response.ok) {
+                    document.getElementById(`${platform.name}-status`).className = 'status-dot status-online';
+                    document.getElementById(`${platform.name}-text`).textContent = '在线';
+                    onlineServices.push(platform);
+                    return true;
+                } else {
+                    document.getElementById(`${platform.name}-status`).className = 'status-dot status-offline';
+                    document.getElementById(`${platform.name}-text`).textContent = '离线';
+                    return false;
+                }
+            } catch (error) {
+                document.getElementById(`${platform.name}-status`).className = 'status-dot status-offline';
+                document.getElementById(`${platform.name}-text`).textContent = '无法连接';
+                return false;
+            }
+        }
+        
+        async function checkAllPlatforms() {
+            console.log('🔍 检查所有平台状态...');
+            
+            for (const platform of platforms) {
+                await checkPlatformStatus(platform);
+            }
+            
+            // 更新统计
+            document.getElementById('online-count').textContent = onlineServices.length;
+            
+            // 显示推荐的API地址
+            if (onlineServices.length > 0) {
+                const recommendedService = onlineServices[0]; // 使用第一个在线服务
+                document.getElementById('recommended-api-url').textContent = recommendedService.apiUrl;
+                document.getElementById('recommended-section').style.display = 'block';
+            }
+        }
+        
+        function copyApiUrl() {
+            const url = document.getElementById('recommended-api-url').textContent;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('API地址已复制到剪贴板！');
+            });
+        }
+        
+        // 页面加载时检查状态
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAllPlatforms();
+            
+            // 每30秒检查一次状态
+            setInterval(checkAllPlatforms, 30000);
+        });
+    </script>
+</body>
+</html> 
