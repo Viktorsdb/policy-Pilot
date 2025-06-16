@@ -608,13 +608,13 @@ async function loadEnhancedPolicies() {
         
         // 尝试加载基础政策列表
         try {
-            const defaultResponse = await fetch(`${API_BASE_URL}/policies?limit=10`);
-            if (defaultResponse.ok) {
-                const defaultData = await defaultResponse.json();
+        const defaultResponse = await fetch(`${API_BASE_URL}/policies?limit=10`);
+        if (defaultResponse.ok) {
+            const defaultData = await defaultResponse.json();
                 if (defaultData.success && defaultData.data.policies) {
-                    displayAllPolicies(defaultData.data.policies);
+            displayAllPolicies(defaultData.data.policies);
                     showNotification('已显示基础政策列表', 'info');
-                } else {
+        } else {
                     throw new Error('基础政策API返回格式错误');
                 }
             } else {

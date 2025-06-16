@@ -9,9 +9,7 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="description" content="PolicyPilot - 基于AI的智能政策匹配平台，帮助企业发现适合的政策机会">
     <meta name="keywords" content="政策匹配,AI咨询,企业政策,政府补贴,创业扶持">
-    <!-- Chart.js库 -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
     <!-- 后端服务状态提示 -->
@@ -112,37 +110,21 @@
                     <div class="analysis-left">
                         <h2 class="section-title">政策匹配分析</h2>
                         <div class="chart-container">
-                            <div class="chart-header">
-                                <h3 class="chart-title">政策类型分布</h3>
-                                <div class="chart-controls">
-                                    <select id="chartPeriod" class="chart-select">
-                                        <option value="month">本月</option>
-                                        <option value="quarter">本季度</option>
-                                        <option value="year" selected>本年度</option>
-                                    </select>
-                                </div>
+                            <div class="chart-wrapper">
+                                <canvas id="policyChart"></canvas>
                             </div>
-                            <canvas id="policyChart" width="400" height="250"></canvas>
                             <div class="chart-legend">
                                 <div class="legend-item">
-                                    <span class="legend-color" style="background: #06b6d4;"></span>
-                                    <span class="legend-label">资金补贴</span>
-                                    <span class="legend-value">45%</span>
+                                    <div class="legend-color" style="background: #8b5cf6;"></div>
+                                    <span>资金补贴 (65%)</span>
                                 </div>
                                 <div class="legend-item">
-                                    <span class="legend-color" style="background: #8b5cf6;"></span>
-                                    <span class="legend-label">税收优惠</span>
-                                    <span class="legend-value">28%</span>
+                                    <div class="legend-color" style="background: #06b6d4;"></div>
+                                    <span>税收优惠 (25%)</span>
                                 </div>
                                 <div class="legend-item">
-                                    <span class="legend-color" style="background: #10b981;"></span>
-                                    <span class="legend-label">创新券</span>
-                                    <span class="legend-value">18%</span>
-                                </div>
-                                <div class="legend-item">
-                                    <span class="legend-color" style="background: #f59e0b;"></span>
-                                    <span class="legend-label">其他</span>
-                                    <span class="legend-value">9%</span>
+                                    <div class="legend-color" style="background: #10b981;"></div>
+                                    <span>政策支持 (10%)</span>
                                 </div>
                             </div>
                         </div>
@@ -172,6 +154,80 @@
     </main>
 
     <script src="script.js"></script>
-    <script src="chart-config.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePolicyChart();
+        });
+
+        function initializePolicyChart() {
+            const ctx = document.getElementById('policyChart').getContext('2d');
+            
+            const chart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['资金补贴', '税收优惠', '政策支持'],
+                    datasets: [{
+                        data: [65, 25, 10],
+                        backgroundColor: [
+                            '#8b5cf6',
+                            '#06b6d4', 
+                            '#10b981'
+                        ],
+                        borderWidth: 0,
+                        cutout: '60%'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: '#fff',
+                            bodyColor: '#fff',
+                            cornerRadius: 8,
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': ' + context.parsed + '%';
+                                }
+                            }
+                        }
+                    },
+                    animation: {
+                        animateRotate: true,
+                        duration: 2000
+                    }
+                }
+            });
+
+            const centerText = {
+                id: 'centerText',
+                afterDraw: function(chart) {
+                    const ctx = chart.ctx;
+                    ctx.save();
+                    
+                    const centerX = chart.chartArea.left + (chart.chartArea.right - chart.chartArea.left) / 2;
+                    const centerY = chart.chartArea.top + (chart.chartArea.bottom - chart.chartArea.top) / 2;
+                    
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillStyle = '#1f2937';
+                    ctx.font = 'bold 24px Inter, sans-serif';
+                    ctx.fillText('1,247', centerX, centerY - 10);
+                    
+                    ctx.font = '14px Inter, sans-serif';
+                    ctx.fillStyle = '#6b7280';
+                    ctx.fillText('政策总数', centerX, centerY + 15);
+                    
+                    ctx.restore();
+                }
+            };
+
+            Chart.register(centerText);
+        }
+    </script>
 </body>
 </html> 

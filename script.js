@@ -546,7 +546,7 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         handleCtaClick();
     }
-});
+}); 
 
 // 检查后端服务状态 - 支持多后端尝试
 async function checkBackendStatus() {
