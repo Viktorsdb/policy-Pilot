@@ -8,14 +8,14 @@
 ## 🌐 在线体验
 
 ### 🎯 直接访问（推荐）
-- **🔗 在线演示**: [https://viktorsdb.github.io/policy-pilot/](https://viktorsdb.github.io/policy-pilot/)
-- **📊 政策看板**: [https://viktorsdb.github.io/policy-pilot/policy-dashboard.html](https://viktorsdb.github.io/policy-pilot/policy-dashboard.html)
-- **🤖 AI聊天**: [https://viktorsdb.github.io/policy-pilot/ai-chat.html](https://viktorsdb.github.io/policy-pilot/ai-chat.html)
-- **🏢 企业信息**: [https://viktorsdb.github.io/policy-pilot/company-info.html](https://viktorsdb.github.io/policy-pilot/company-info.html)
+- **🔗 在线演示**: [https://viktorsdb.github.io/policy-Pilot/](https://viktorsdb.github.io/policy-Pilot/)
+- **📊 政策看板**: [https://viktorsdb.github.io/policy-Pilot/policy-dashboard.html](https://viktorsdb.github.io/policy-Pilot/policy-dashboard.html)
+- **🤖 AI聊天**: [https://viktorsdb.github.io/policy-Pilot/ai-chat.html](https://viktorsdb.github.io/policy-Pilot/ai-chat.html)
+- **🏢 企业信息**: [https://viktorsdb.github.io/policy-Pilot/company-info.html](https://viktorsdb.github.io/policy-Pilot/company-info.html)
 
 ### 🚀 云平台部署
 - **Heroku部署**: [https://policy-pilot-viktorsdb.herokuapp.com](https://policy-pilot-viktorsdb.herokuapp.com)
-- **GitHub仓库**: [https://github.com/Viktorsdb/policy-pilot](https://github.com/Viktorsdb/policy-pilot)
+- **GitHub仓库**: [https://github.com/Viktorsdb/policy-Pilot](https://github.com/Viktorsdb/policy-Pilot)
 
 ## ✨ 核心功能
 
@@ -60,7 +60,7 @@
 
 ### 🌐 GitHub Pages（推荐）
 项目已自动部署到GitHub Pages，可直接访问：
-- 主页：https://viktorsdb.github.io/policy-pilot/
+- 主页：https://viktorsdb.github.io/policy-Pilot/
 - 无需任何配置，即开即用！
 
 ### 一键部署到Heroku
@@ -78,8 +78,8 @@
 ### 本地运行
 ```bash
 # 克隆仓库
-git clone https://github.com/Viktorsdb/policy-pilot.git
-cd policy-pilot
+git clone https://github.com/Viktorsdb/policy-Pilot.git
+cd policy-Pilot
 
 # 安装依赖
 pip install -r requirements.txt
@@ -175,8 +175,8 @@ policy-pilot/
 ## 📞 技术支持
 
 - 📧 **邮箱**: support@policypilot.com
-- 🐛 **Bug报告**: [GitHub Issues](https://github.com/Viktorsdb/policy-pilot/issues)
-- 💬 **讨论**: [GitHub Discussions](https://github.com/Viktorsdb/policy-pilot/discussions)
+- 🐛 **Bug报告**: [GitHub Issues](https://github.com/Viktorsdb/policy-Pilot/issues)
+- 💬 **讨论**: [GitHub Discussions](https://github.com/Viktorsdb/policy-Pilot/discussions)
 
 ## 📄 许可证
 
@@ -190,5 +190,5 @@ policy-pilot/
 
 **让AI为您的企业发现无限可能！** ✨
 
-[![Star this repo](https://img.shields.io/github/stars/Viktorsdb/policy-pilot?style=social)](https://github.com/Viktorsdb/policy-pilot)
-[![Fork this repo](https://img.shields.io/github/forks/Viktorsdb/policy-pilot?style=social)](https://github.com/Viktorsdb/policy-pilot/fork) 
+[![Star this repo](https://img.shields.io/github/stars/Viktorsdb/policy-Pilot?style=social)](https://github.com/Viktorsdb/policy-Pilot)
+[![Fork this repo](https://img.shields.io/github/forks/Viktorsdb/policy-Pilot?style=social)](https://github.com/Viktorsdb/policy-Pilot/fork) 

@@ -2,7 +2,7 @@
 title: "PolicyPilot - AI政策匹配平台"
 description: "基于AI的智能政策匹配平台，帮助企业发现适合的政策机会"
 url: "https://viktorsdb.github.io"
-baseurl: "/policy-pilot"
+baseurl: "/policy-Pilot"
 
 # 构建设置
 markdown: kramdown
@@ -34,6 +34,8 @@ exclude:
   - docker-compose.yml
   - .github
   - backend
+  - start.sh
+  - start.bat
 
 # 包含文件
 include:
