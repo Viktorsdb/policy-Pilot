@@ -1,0 +1,1560 @@
+/* 全局样式重置 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    line-height: 1.6;
+    color: #1f2937;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+/* 导航栏样式 */
+.navbar {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 10px rgba(0, 0, 0, 0.05);
+}
+
+.nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 70px;
+}
+
+.logo-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -0.025em;
+}
+
+.nav-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.nav-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 8px 16px;
+    color: #6b7280;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+    background: #f8fafc;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.nav-btn i {
+    font-size: 14px;
+}
+
+/* 主要内容区域 */
+.main-content {
+    padding: 40px 0;
+}
+
+/* 页面标题区域 */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 40px;
+    gap: 24px;
+}
+
+.header-left h1.page-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin-bottom: 8px;
+    background: linear-gradient(135deg, #ec4899, #8b5cf6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.page-subtitle {
+    font-size: 1.1rem;
+    color: #6b7280;
+}
+
+.header-right {
+    display: flex;
+    gap: 12px;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.action-btn {
+    background: #f8fafc;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+}
+
+.action-btn:hover {
+    background: #f1f5f9;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 20px rgba(139, 92, 246, 0.3);
+}
+
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(139, 92, 246, 0.4);
+}
+
+/* 刷新爬取数据按钮特殊样式 */
+.action-btn.btn-refresh {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    border: none;
+    box-shadow: 0 3px 15px rgba(16, 185, 129, 0.25);
+    position: relative;
+    overflow: hidden;
+}
+
+.action-btn.btn-refresh:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 25px rgba(16, 185, 129, 0.35);
+    background: linear-gradient(135deg, #059669, #047857);
+}
+
+.action-btn.btn-refresh:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: 0 3px 15px rgba(16, 185, 129, 0.15);
+}
+
+.action-btn.btn-refresh i.fa-spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* 政策机会区域 */
+.policy-opportunities {
+    margin-bottom: 50px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title i {
+    color: #f59e0b;
+    font-size: 1.25rem;
+}
+
+.policy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 32px;
+    padding: 8px;
+}
+
+.policy-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid #f1f5f9;
+    position: relative;
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+@keyframes fadeInUp {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.policy-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+    border-color: #e2e8f0;
+}
+
+.policy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.policy-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 新数据徽章 */
+.new-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+/* 近期发布徽章 */
+.recent-badge {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+    color: white;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    animation: glow-recent 3s infinite;
+}
+
+@keyframes glow-recent {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(6, 182, 212, 0); }
+}
+
+/* 优先级徽章 */
+.priority-badge {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #dc2626, #b91c1c);
+    color: white;
+    padding: 6px;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    animation: glow-priority 3s infinite;
+}
+
+@keyframes glow-priority {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4); }
+    50% { box-shadow: 0 0 0 8px rgba(220, 38, 38, 0); }
+}
+
+/* 匹配度评分 */
+.match-score {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 6px 10px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* 政策信息区域 */
+.info-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.info-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-item i {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: #9ca3af;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value {
+    font-size: 0.875rem;
+    color: #374151;
+    font-weight: 500;
+}
+
+.info-value.amount {
+    color: #059669;
+    font-weight: 600;
+}
+
+.info-value.recent-publish {
+    color: #0891b2;
+    font-weight: 600;
+}
+
+/* 政策标签 */
+.policy-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 16px 0;
+}
+
+.policy-tag {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border: 1px solid #e2e8f0;
+}
+
+.more-tags {
+    background: #f8fafc;
+    color: #64748b;
+    padding: 4px 8px;
+    border-radius: 8px;
+    font-size: 0.75rem;
+    font-style: italic;
+}
+
+/* 政策描述 */
+.policy-description {
+    margin: 16px 0;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid #e2e8f0;
+}
+
+.policy-description p {
+    color: #64748b;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* AI推荐区域 */
+.match-recommendation {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05));
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.recommendation-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.recommendation-header i {
+    color: #8b5cf6;
+    font-size: 1rem;
+}
+
+.recommendation-header span {
+    color: #7c3aed;
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.recommendation-text {
+    color: #6b46c1;
+    font-size: 0.875rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* 政策操作按钮 */
+.policy-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.action-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    border: none;
+    background: transparent;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+.action-btn.primary:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.action-btn.secondary {
+    background: #f8fafc;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.action-btn.secondary:hover {
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
+}
+
+.action-btn.ai-consult {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+}
+
+.action-btn.ai-consult:hover {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* 政策卡片底部 */
+.policy-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f1f5f9;
+    font-size: 0.75rem;
+    color: #9ca3af;
+}
+
+.update-time, .data-source {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.update-time i, .data-source i {
+    font-size: 0.7rem;
+}
+
+/* 询问AI按钮 */
+.ask-ai-btn {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 0.875rem;
+}
+
+.ask-ai-btn:hover {
+    background: linear-gradient(135deg, #7c3aed, #6d28d9);
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .policy-card {
+        padding: 20px;
+    }
+    
+    .info-row {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .policy-actions {
+        flex-direction: column;
+    }
+    
+    .action-btn {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .policy-footer {
+        flex-direction: column;
+        gap: 8px;
+        align-items: flex-start;
+    }
+    
+    .policy-header-right {
+        flex-wrap: wrap;
+    }
+}
+
+/* AI对话区域 */
+.ai-section {
+    margin-bottom: 50px;
+}
+
+.ai-card {
+    background: white;
+    border-radius: 20px;
+    padding: 32px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.ai-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.ai-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+}
+
+.ai-info h3.ai-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.ai-subtitle {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.ai-welcome {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05));
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    border-left: 4px solid #8b5cf6;
+}
+
+.welcome-text {
+    color: #374151;
+    line-height: 1.6;
+}
+
+.ai-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.quick-actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.quick-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    background: #f8fafc;
+    border: 1px solid #e5e7eb;
+    border-radius: 20px;
+    color: #6b7280;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-btn:hover {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(236, 72, 153, 0.1));
+    border-color: #8b5cf6;
+    color: #8b5cf6;
+}
+
+.quick-btn i {
+    font-size: 12px;
+}
+
+.chat-input-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.chat-input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    font-size: 1rem;
+    color: #1f2937;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.chat-input:focus {
+    outline: none;
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+.send-btn {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.send-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139, 92, 246, 0.3);
+}
+
+.send-btn i {
+    font-size: 16px;
+}
+
+/* 统计信息区域 */
+.stats-section {
+    margin-bottom: 40px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: white;
+}
+
+.stat-card:nth-child(1) .stat-icon {
+    background: linear-gradient(135deg, #06b6d4, #10b981);
+}
+
+.stat-card:nth-child(2) .stat-icon {
+    background: linear-gradient(135deg, #8b5cf6, #ec4899);
+}
+
+.stat-card:nth-child(3) .stat-icon {
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+
+.stat-card:nth-child(4) .stat-icon {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-number {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: #6b7280;
+    font-weight: 500;
+}
+
+/* 加载状态样式 */
+.loading-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    color: #6b7280;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #f3f4f6;
+    border-top: 4px solid #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 24px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-state p {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+/* 错误状态样式 */
+.error-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.error-state i {
+    font-size: 4rem;
+    margin-bottom: 24px;
+    color: #f87171;
+}
+
+.error-state h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #dc2626;
+}
+
+.error-state p {
+    font-size: 1.125rem;
+    color: #6b7280;
+    margin-bottom: 32px;
+    line-height: 1.6;
+}
+
+.retry-btn {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+}
+
+.retry-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(59, 130, 246, 0.4);
+}
+
+/* 无政策状态样式 */
+.no-policies {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 100px 20px;
+    text-align: center;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.no-policies i {
+    font-size: 4rem;
+    margin-bottom: 24px;
+    color: #d1d5db;
+}
+
+.no-policies h3 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 12px;
+    color: #374151;
+}
+
+.no-policies p {
+    font-size: 1.125rem;
+    color: #6b7280;
+    line-height: 1.6;
+}
+
+/* 统计数据更新样式 */
+.stat-number {
+    font-size: 2rem;
+    font-weight: 800;
+    color: #1f2937;
+    line-height: 1;
+    margin-bottom: 4px;
+    transition: all 0.3s ease;
+}
+
+.stat-number[data-target] {
+    color: #3b82f6;
+}
+
+/* 响应式设计 */
+@media (max-width: 1024px) {
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    
+    .header-right {
+        align-self: stretch;
+        justify-content: flex-end;
+    }
+    
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 0 16px;
+    }
+    
+    .nav-container {
+        padding: 0 16px;
+    }
+    
+    .nav-actions {
+        gap: 8px;
+    }
+    
+    .nav-btn span {
+        display: none;
+    }
+    
+    .page-header h1.page-title {
+        font-size: 2rem;
+    }
+    
+    .policy-grid {
+        grid-template-columns: 1fr;
+        gap: 24px;
+        padding: 4px;
+    }
+    
+    .policy-card {
+        min-height: auto;
+    }
+    
+    .policy-card .policy-header {
+        padding: 20px 20px 0 20px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    
+    .policy-card .policy-title {
+        padding: 0 20px;
+        font-size: 1.25rem;
+    }
+    
+    .policy-card .policy-info {
+        padding: 0 20px;
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    
+    .policy-card .policy-recommendation {
+        margin: 0 20px 16px 20px;
+        padding: 12px;
+    }
+    
+    .policy-card .policy-actions {
+        padding: 0 20px 20px 20px;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .policy-card .btn-detail,
+    .policy-card .btn-apply {
+        flex: none;
+        padding: 12px 16px;
+    }
+    
+    .ai-card {
+        padding: 24px;
+    }
+    
+    .ai-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .quick-actions {
+        flex-direction: column;
+    }
+    
+    .chat-input-container {
+        flex-direction: column;
+    }
+    
+    .chat-input {
+        width: 100%;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content {
+        padding: 20px 0;
+    }
+    
+    .page-header h1.page-title {
+        font-size: 1.75rem;
+    }
+    
+    .policy-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 0;
+    }
+    
+    .policy-card {
+        border-radius: 16px;
+        margin: 0 4px;
+    }
+    
+    .policy-card .policy-header {
+        padding: 16px 16px 0 16px;
+    }
+    
+    .policy-card .policy-title {
+        padding: 0 16px;
+        font-size: 1.125rem;
+    }
+    
+    .policy-card .policy-info {
+        padding: 0 16px;
+    }
+    
+    .policy-card .policy-recommendation {
+        margin: 0 16px 12px 16px;
+        padding: 10px;
+    }
+    
+    .policy-card .policy-actions {
+        padding: 0 16px 16px 16px;
+    }
+    
+    .policy-card .btn-detail,
+    .policy-card .btn-apply {
+        padding: 10px 14px;
+        font-size: 0.8rem;
+    }
+    
+    .ai-card {
+        padding: 20px;
+    }
+    
+    .ai-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+    
+    .quick-btn {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .loading-state,
+    .error-state,
+    .no-policies {
+        padding: 60px 16px;
+    }
+    
+    .loading-state i,
+    .error-state i,
+    .no-policies i {
+        font-size: 3rem;
+    }
+    
+    .loading-state h3,
+    .error-state h3,
+    .no-policies h3 {
+        font-size: 1.25rem;
+    }
+    
+    .loading-state p,
+    .error-state p,
+    .no-policies p {
+        font-size: 1rem;
+    }
+}
+
+/* 通知消息样式 */
+.notification {
+    position: fixed;
+    top: 90px;
+    right: 24px;
+    z-index: 1050;
+    padding: 16px 24px;
+    border-radius: 12px;
+    font-weight: 500;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+    transform: translateX(400px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-width: 400px;
+}
+
+.notification.show {
+    transform: translateX(0);
+}
+
+.notification.success {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+}
+
+.notification.error {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+    color: white;
+}
+
+.notification.info {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    color: white;
+}
+
+/* 政策卡片overlay样式 */
+.policy-card .policy-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(139, 92, 246, 0.9);
+    backdrop-filter: blur(8px);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.policy-card .overlay-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: white;
+    text-align: center;
+    font-weight: 600;
+}
+
+.policy-card .overlay-content i {
+    font-size: 2rem;
+    animation: pulse 2s infinite;
+}
+
+.policy-card .overlay-content span {
+    font-size: 1rem;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* 政策匹配统计样式 */
+.match-statistics {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.05), rgba(236, 72, 153, 0.05));
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: 16px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.match-stats-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #1f2937;
+}
+
+.match-stats-header i {
+    color: #8b5cf6;
+    font-size: 1.25rem;
+}
+
+.match-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.match-stat-item {
+    background: white;
+    border-radius: 12px;
+    padding: 16px;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.match-stat-item.high {
+    border-color: rgba(16, 185, 129, 0.3);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(5, 150, 105, 0.05));
+}
+
+.match-stat-item.medium {
+    border-color: rgba(245, 158, 11, 0.3);
+    background: linear-gradient(135deg, rgba(245, 158, 11, 0.05), rgba(217, 119, 6, 0.05));
+}
+
+.match-stat-item.low {
+    border-color: rgba(107, 114, 128, 0.3);
+    background: linear-gradient(135deg, rgba(107, 114, 128, 0.05), rgba(75, 85, 99, 0.05));
+}
+
+.match-stat-item .count {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 4px;
+}
+
+.match-stat-item.high .count {
+    color: #10b981;
+}
+
+.match-stat-item.medium .count {
+    color: #f59e0b;
+}
+
+.match-stat-item.low .count {
+    color: #6b7280;
+}
+
+.match-stat-item .label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+@media (max-width: 768px) {
+    .match-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .match-stat-item {
+        padding: 12px;
+    }
+    
+    .match-stat-item .count {
+        font-size: 1.5rem;
+    }
+}
+
+/* 爬取进度提示样式 */
+.crawling-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.crawling-progress.show {
+    opacity: 1;
+}
+
+.progress-content {
+    background: white;
+    border-radius: 20px;
+    padding: 40px;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+}
+
+.crawling-progress.show .progress-content {
+    transform: translateY(0);
+}
+
+.progress-icon {
+    font-size: 4rem;
+    color: #8b5cf6;
+    margin-bottom: 20px;
+}
+
+.progress-text h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.progress-text p {
+    color: #6b7280;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    position: relative;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+}
+
+.step.active {
+    opacity: 1;
+    color: #8b5cf6;
+}
+
+.step.completed {
+    opacity: 1;
+    color: #10b981;
+}
+
+.step i {
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.step.active i {
+    background: rgba(139, 92, 246, 0.1);
+    color: #8b5cf6;
+    animation: pulse-progress 2s infinite;
+}
+
+.step.completed i {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+}
+
+.step span {
+    font-size: 0.75rem;
+    font-weight: 500;
+    text-align: center;
+    line-height: 1.2;
+}
+
+.step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    right: -6px;
+    width: 12px;
+    height: 2px;
+    background: #e5e7eb;
+    transition: background 0.3s ease;
+}
+
+.step.completed:not(:last-child)::after {
+    background: #10b981;
+}
+
+@keyframes pulse-progress {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.4);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+    }
+}
+
+/* 刷新按钮优化样式 */
+.btn-refresh {
+    background: linear-gradient(135deg, #10b981, #059669) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.btn-refresh:hover {
+    background: linear-gradient(135deg, #059669, #047857) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+}
+
+.btn-refresh:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none !important;
+}
+
+/* 统计卡片数字动画优化 */
+.stat-number {
+    transition: all 0.3s ease;
+}
+
+.stat-number.updating {
+    color: #8b5cf6;
+    transform: scale(1.1);
+}
+
+/* 响应式设计优化 */
+@media (max-width: 768px) {
+    .progress-content {
+        padding: 30px 20px;
+        margin: 20px;
+    }
+    
+    .progress-icon {
+        font-size: 3rem;
+    }
+    
+    .progress-text h3 {
+        font-size: 1.25rem;
+    }
+    
+    .progress-steps {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .step {
+        flex-direction: row;
+        justify-content: flex-start;
+        width: 100%;
+        padding: 10px;
+        border-radius: 8px;
+        background: #f8fafc;
+    }
+    
+    .step:not(:last-child)::after {
+        display: none;
+    }
+    
+    .step i {
+        margin-right: 12px;
+    }
+    
+    .step span {
+        font-size: 0.875rem;
+        text-align: left;
+    }
+}
+
+/* 政策类型标识 */
+.policy-type {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: white;
+    flex-shrink: 0;
+}
+
+.policy-type.grant {
+    background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.policy-type.subsidy {
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+}
+
+.policy-type.loan {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+.policy-type.tax {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+}
+
+.policy-type.voucher {
+    background: linear-gradient(135deg, #06b6d4, #0891b2);
+}
+
+.policy-type.other {
+    background: linear-gradient(135deg, #6b7280, #4b5563);
+}
+
+/* 政策标题 */
+.policy-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1f2937;
+    margin-bottom: 16px;
+    line-height: 1.4;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.policy-header-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+} 

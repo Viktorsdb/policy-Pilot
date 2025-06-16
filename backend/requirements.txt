@@ -1,0 +1,48 @@
+# FastAPI和基础依赖
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# 数据库相关
+sqlalchemy[asyncio]==2.0.23
+asyncpg==0.29.0
+psycopg2-binary==2.9.9
+
+# 向量数据库
+chromadb==0.4.18
+
+# AI和NLP模型
+sentence-transformers==2.2.2
+torch==2.1.0
+transformers==4.36.0
+
+# HTTP客户端
+httpx==0.25.2
+
+# 异步任务队列
+celery==5.3.4
+redis==5.0.1
+
+# 网页爬虫
+playwright==1.40.0
+beautifulsoup4==4.12.2
+requests==2.31.0
+
+# PDF处理
+PyPDF2==3.0.1
+pdfplumber==0.10.0
+
+# 日期时间处理
+python-dateutil==2.8.2
+
+# 工具库
+python-multipart==0.0.6
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# 开发工具
+pytest==7.4.3
+pytest-asyncio==0.21.1
+black==23.11.0
+flake8==6.1.0 

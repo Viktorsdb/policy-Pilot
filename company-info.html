@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>企业信息填写 - PolicyPilot</title>
+    <link rel="stylesheet" href="company-info.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <span class="logo-text">PolicyPilot</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="goHome()">
+                    <i class="fas fa-home"></i>
+                    返回首页
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 页面标题 -->
+            <div class="page-header">
+                <h1 class="page-title">企业信息填写</h1>
+                <p class="page-description">请填写您的企业基本信息，以便为您提供精准的政策匹配服务</p>
+            </div>
+
+            <!-- 表单区域 -->
+            <div class="form-container">
+                <form id="companyForm" class="company-form">
+                    <div class="form-card">
+                        <h2 class="form-title">企业基本信息</h2>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">企业名称 <span class="required">*</span></label>
+                                <input type="text" class="form-input" placeholder="请输入企业名称" id="companyName" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">公司注册地 <span class="required">*</span></label>
+                                <select class="form-select" id="registrationLocation" required>
+                                    <option value="">请选择注册地</option>
+                                    <option value="xuhui">徐汇区</option>
+                                </select>
+                                <div class="field-note">注：目前仅支持徐汇区注册企业</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">企业产业匹配 <span class="required">*</span></label>
+                                <select class="form-select" id="industryMatch" required>
+                                    <option value="">请选择产业类型</option>
+                                    <option value="ai-tech">AI/科技</option>
+                                    <option value="manufacturing">制造业</option>
+                                    <option value="service">服务业</option>
+                                    <option value="other">其他</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">企业经营状态</label>
+                                <select class="form-select" id="operatingStatus">
+                                    <option value="good">良好</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">企业信用情况</label>
+                                <select class="form-select" id="creditStatus">
+                                    <option value="good">良好</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">企业科创专利</label>
+                                <input type="number" class="form-input" placeholder="请输入专利数量" id="patents" min="0">
+                                <div class="field-note">请填写企业拥有的科创专利数量</div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">企业规模 <span class="required">*</span></label>
+                                <select class="form-select" id="companyScale" required>
+                                    <option value="">请选择企业规模</option>
+                                    <option value="under-5m">500万以下</option>
+                                    <option value="5m-20m">500万-2000万</option>
+                                    <option value="20m-100m">2000万-1亿</option>
+                                    <option value="over-100m">1亿以上</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">研发投入占比 <span class="required">*</span></label>
+                                <select class="form-select" id="rdInvestment" required>
+                                    <option value="">请选择研发投入占比</option>
+                                    <option value="under-3">3%以下</option>
+                                    <option value="3-5">3%-5%</option>
+                                    <option value="5-10">5%-10%</option>
+                                    <option value="over-10">10%以上</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label class="form-label">企业认定</label>
+                                <select class="form-select" id="enterpriseCertification">
+                                    <option value="">请选择企业认定类型</option>
+                                    <option value="high-tech">高新技术企业</option>
+                                    <option value="specialized">专精特新企业</option>
+                                    <option value="little-giant">小巨人企业</option>
+                                    <option value="listed">上市企业</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label class="form-label">联系电话</label>
+                                <input type="tel" class="form-input" placeholder="请输入联系电话" id="contactPhone">
+                            </div>
+                            
+                            <div class="form-group full-width">
+                                <label class="form-label">联系邮箱</label>
+                                <input type="email" class="form-input" placeholder="请输入联系邮箱" id="contactEmail">
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-container">
+                <button class="btn btn-success" id="submitBtn" onclick="submitForm()">
+                    <i class="fas fa-check"></i>
+                    提交信息
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="company-info.js"></script>
+</body>
+</html> 

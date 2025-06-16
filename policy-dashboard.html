@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政策看板 - PolicyPilot</title>
+    <link rel="stylesheet" href="policy-dashboard.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <span class="logo-text">PolicyPilot</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="goHome()">
+                    <i class="fas fa-home"></i>
+                    返回首页
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <div class="container">
+            <!-- 页面标题区域 -->
+            <div class="page-header">
+                <div class="header-left">
+                    <h1 class="page-title dashboard-title">政策看板</h1>
+                    <p class="page-subtitle">发现与您的政策机会</p>
+                    </div>
+                <div class="header-right">
+                    <button class="action-btn" onclick="refreshPolicies()">
+                        <i class="fas fa-sync-alt"></i>
+                        刷新数据
+                    </button>
+                    <button class="action-btn primary" onclick="openAIConsult()">
+                        <i class="fas fa-robot"></i>
+                        咨询AI
+                    </button>
+                </div>
+            </div>
+
+            <!-- 政策机会卡片区域 -->
+            <div class="policy-opportunities">
+                <h2 class="section-title">
+                    <i class="fas fa-lightbulb"></i>
+                    为您精选的政策机会
+                </h2>
+                
+                <!-- 动态政策容器 -->
+                <div class="policies-container policy-grid">
+                    <!-- 政策卡片将由JavaScript动态生成 -->
+                </div>
+            </div>
+
+            <!-- AI Agent对话入口 -->
+            <div class="ai-section">
+                <div class="ai-card">
+                    <div class="ai-header">
+                        <div class="ai-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="ai-info">
+                            <h3 class="ai-title">AI agent对话</h3>
+                            <p class="ai-subtitle">AI政策助手 - 在线为您服务</p>
+                        </div>
+                    </div>
+                    
+                    <div class="ai-welcome">
+                        <p class="welcome-text">
+                            您好！我是您专属的PolicyPilot智能助手，请告诉我您的企业类型和需求，我会为您推荐最合适的政策机会。
+                        </p>
+                    </div>
+
+                    <div class="ai-actions">
+                        <div class="quick-actions">
+                            <button class="quick-btn" onclick="askAI('高新技术企业认定条件')">
+                                <i class="fas fa-question-circle"></i>
+                                高新技术企业认定条件
+                            </button>
+                            <button class="quick-btn" onclick="askAI('中小企业扶持政策')">
+                                <i class="fas fa-question-circle"></i>
+                                中小企业扶持政策
+                            </button>
+                        </div>
+                        
+                        <div class="chat-input-container">
+                            <input 
+                                type="text" 
+                                class="chat-input" 
+                                placeholder="请输入您的问题..." 
+                                id="aiChatInput"
+                                onkeypress="handleChatKeyPress(event)"
+                            >
+                            <button class="send-btn" onclick="sendToAI()">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 政策统计信息 -->
+            <div class="stats-section">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">1,247</div>
+                            <div class="stat-label">可申请政策</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">98%</div>
+                            <div class="stat-label">匹配准确率</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">24h</div>
+                            <div class="stat-label">响应时间</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <div class="stat-number">15,000+</div>
+                            <div class="stat-label">服务企业</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="policy-dashboard.js"></script>
+</body>
+</html> 

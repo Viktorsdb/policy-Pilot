@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI智能咨询 - PolicyPilot</title>
+    <link rel="stylesheet" href="ai-chat.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo-container">
+                <span class="logo-text">PolicyPilot</span>
+            </div>
+            <div class="nav-actions">
+                <button class="nav-btn" onclick="clearChat()">
+                    <i class="fas fa-trash-alt"></i>
+                    清空对话
+                </button>
+                <button class="nav-btn" onclick="goHome()">
+                    <i class="fas fa-home"></i>
+                    返回首页
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <!-- AI对话容器 -->
+        <div class="chat-container">
+            <!-- 聊天标题 -->
+            <div class="chat-header">
+                <div class="ai-avatar-large">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="chat-info">
+                    <h1 class="chat-title">AI agent对话</h1>
+                    <p class="chat-subtitle">AI政策助手 - 在线为您服务</p>
+                </div>
+                <div class="chat-status">
+                    <span class="status-indicator online"></span>
+                    <span class="status-text">在线</span>
+                </div>
+            </div>
+
+            <!-- 聊天区域 -->
+            <div class="chat-area" id="chatArea">
+                <!-- AI欢迎消息 -->
+                <div class="message ai-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div class="message-text">
+                                您好！我是PolicyPilot AI助手。我可以帮助您：<br>
+                                • 查找适合的政策机会<br>
+                                • 解答政策申请问题<br>
+                                • 提供申请指导建议<br><br>
+                                请告诉我您的企业情况或政策需求，我会为您提供专业的建议。
+                            </div>
+                        </div>
+                        <div class="message-time">刚刚</div>
+                    </div>
+                </div>
+
+                <!-- 示例用户消息 -->
+                <div class="message user-message">
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div class="message-text">
+                                我想了解高新技术企业认定的具体条件和申请流程
+                            </div>
+                        </div>
+                        <div class="message-time">刚刚</div>
+                    </div>
+                    <div class="message-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+
+                <!-- AI回复消息 -->
+                <div class="message ai-message">
+                    <div class="message-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="message-content">
+                        <div class="message-bubble">
+                            <div class="message-text">
+                                关于高新技术企业认定，我来为您详细介绍：<br><br>
+                                
+                                <strong>📋 主要认定条件：</strong><br>
+                                1. 企业申请认定时须注册成立一年以上<br>
+                                2. 企业通过自主研发、受让、受赠、并购等方式，获得对其主要产品在技术上发挥核心支持作用的知识产权的所有权<br>
+                                3. 对企业主要产品发挥核心支持作用的技术属于《国家重点支持的高新技术领域》规定的范围<br><br>
+                                
+                                <strong>📊 评分标准：</strong><br>
+                                • 知识产权（30分）<br>
+                                • 科技成果转化能力（30分）<br>
+                                • 研究开发组织管理水平（20分）<br>
+                                • 企业成长性（20分）<br><br>
+                                
+                                总分70分以上（不含70分）为符合认定要求。<br><br>
+                                
+                                需要我为您详细介绍申请流程吗？
+                            </div>
+                        </div>
+                        <div class="message-time">刚刚</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快速回复建议 -->
+            <div class="quick-replies" id="quickReplies">
+                <div class="quick-reply-item" onclick="sendQuickReply('请详细介绍申请流程')">
+                    请详细介绍申请流程
+                </div>
+                <div class="quick-reply-item" onclick="sendQuickReply('我的企业是否符合条件？')">
+                    我的企业是否符合条件？
+                </div>
+                <div class="quick-reply-item" onclick="sendQuickReply('需要准备哪些材料？')">
+                    需要准备哪些材料？
+                </div>
+                <div class="quick-reply-item" onclick="sendQuickReply('认定后有什么优惠政策？')">
+                    认定后有什么优惠政策？
+                </div>
+            </div>
+
+            <!-- 输入区域 -->
+            <div class="input-area">
+                <div class="input-container">
+                    <button class="attachment-btn" onclick="showAttachmentMenu()">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input 
+                        type="text" 
+                        class="chat-input" 
+                        placeholder="输入您的问题..." 
+                        id="chatInput"
+                        onkeypress="handleKeyPress(event)"
+                    >
+                    <button class="send-btn" onclick="sendMessage()" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+                
+                <!-- 输入提示 -->
+                <div class="input-hint">
+                    <i class="fas fa-lightbulb"></i>
+                    <span>提示：您可以询问政策申请条件、流程、材料准备等问题</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 侧边栏（可选功能） -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h3>常用功能</h3>
+                <button class="sidebar-close" onclick="toggleSidebar()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="sidebar-content">
+                <div class="function-group">
+                    <h4>政策查询</h4>
+                    <ul class="function-list">
+                        <li onclick="askAI('高新技术企业认定')">高新技术企业认定</li>
+                        <li onclick="askAI('中小企业扶持政策')">中小企业扶持政策</li>
+                        <li onclick="askAI('创新创业补贴')">创新创业补贴</li>
+                        <li onclick="askAI('人才引进政策')">人才引进政策</li>
+                    </ul>
+                </div>
+                
+                <div class="function-group">
+                    <h4>申请指导</h4>
+                    <ul class="function-list">
+                        <li onclick="askAI('申请材料清单')">申请材料清单</li>
+                        <li onclick="askAI('申请流程指导')">申请流程指导</li>
+                        <li onclick="askAI('常见问题解答')">常见问题解答</li>
+                        <li onclick="askAI('申请技巧分享')">申请技巧分享</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="ai-chat.js"></script>
+</body>
+</html> 
