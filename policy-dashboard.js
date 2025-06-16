@@ -25,6 +25,10 @@ document.addEventListener('DOMContentLoaded', function() {
     loadPoliciesFromAPI();
     initializeStatCounters();
     addRefreshButton();
+    setTimeout(() => {
+        initializeCharts();
+        bindChartEvents();
+    }, 1000);
 });
 
 // 添加刷新数据按钮
@@ -630,57 +634,67 @@ async function loadEnhancedPolicies() {
 
 // 显示匹配的政策
 function displayMatchedPolicies(matches) {
-    const policiesContainer = document.querySelector('.policies-container');
-    if (!policiesContainer) return;
+    policiesData = matches.map(match => match.policy);
+    const container = document.querySelector('.policies-container');
     
-    policiesContainer.innerHTML = '';
+    if (!container) return;
+    
+    container.innerHTML = '';
     
     if (matches.length === 0) {
-        policiesContainer.innerHTML = `
+        container.innerHTML = `
             <div class="no-policies">
                 <i class="fas fa-search"></i>
                 <h3>暂未找到匹配的政策</h3>
-                <p>请检查企业信息或联系客服</p>
+                <p>建议完善企业信息或联系AI助手获取个性化推荐</p>
             </div>
         `;
         return;
     }
     
-    matches.forEach((policy, index) => {
-        const policyCard = createPolicyCard(policy, index, true);
-        policiesContainer.appendChild(policyCard);
+    matches.forEach((match, index) => {
+        const policyCard = createPolicyCard(match.policy, index, true);
+        container.appendChild(policyCard);
     });
+    
+    // 更新图表数据
+    setTimeout(() => {
+        updateChartsData(policiesData);
+    }, 300);
 }
 
 // 显示所有政策
 function displayAllPolicies(policies) {
-    const policiesContainer = document.querySelector('.policies-container');
-    if (!policiesContainer) return;
+    policiesData = policies;
+    const container = document.querySelector('.policies-container');
     
-    policiesContainer.innerHTML = '';
+    if (!container) return;
     
-    if (!policies || policies.length === 0) {
-        policiesContainer.innerHTML = `
+    container.innerHTML = '';
+    
+    if (policies.length === 0) {
+        container.innerHTML = `
             <div class="no-policies">
-                <i class="fas fa-search"></i>
+                <i class="fas fa-exclamation-circle"></i>
                 <h3>暂无政策数据</h3>
-                <p>请稍后重试或联系客服</p>
+                <p>请检查网络连接或稍后重试</p>
             </div>
         `;
         return;
     }
     
-    policies.forEach((policy, index) => {
-        // 确保每个政策都有匹配度信息
-        const enhancedPolicy = {
-            ...policy,
-            match_score: policy.match_score || policy.base_score || 0.6,
-            recommendation: policy.recommendation || '完善企业信息可获得更精准的政策匹配建议。'
-        };
-        
-        const policyCard = createPolicyCard(enhancedPolicy, index, !!enhancedPolicy.match_score);
-        policiesContainer.appendChild(policyCard);
+    // 按匹配度排序（如果有匹配度）
+    const sortedPolicies = policies.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
+    
+    sortedPolicies.forEach((policy, index) => {
+        const policyCard = createPolicyCard(policy, index, false);
+        container.appendChild(policyCard);
     });
+    
+    // 更新图表数据
+    setTimeout(() => {
+        updateChartsData(policiesData);
+    }, 300);
 }
 
 // 创建政策卡片
@@ -1725,4 +1739,324 @@ function showMatchStatistics(matchData) {
         
         pageHeader.insertAdjacentHTML('afterend', matchStatsHtml);
     }
-} 
+}
+
+// 图表初始化和数据更新功能
+function initializeCharts() {
+    console.log('🎨 初始化图表...');
+    
+    // 延迟执行动画，确保DOM完全加载
+    setTimeout(() => {
+        initializePieChartAnimations();
+        initializeBarChartAnimations();
+        initializeRingChartAnimations();
+    }, 500);
+}
+
+// 饼图动画初始化
+function initializePieChartAnimations() {
+    const pieCircles = document.querySelectorAll('.pie-svg circle');
+    
+    pieCircles.forEach((circle, index) => {
+        // 设置初始状态
+        const originalDashArray = circle.getAttribute('stroke-dasharray');
+        circle.setAttribute('stroke-dasharray', '0 503');
+        
+        // 延迟动画
+        setTimeout(() => {
+            circle.setAttribute('stroke-dasharray', originalDashArray);
+        }, index * 200);
+        
+        // 添加悬停交互
+        circle.addEventListener('mouseenter', () => {
+            circle.style.filter = 'brightness(1.1)';
+            circle.style.strokeWidth = '22';
+        });
+        
+        circle.addEventListener('mouseleave', () => {
+            circle.style.filter = 'brightness(1)';
+            circle.style.strokeWidth = '20';
+        });
+    });
+}
+
+// 柱状图动画初始化
+function initializeBarChartAnimations() {
+    const barFills = document.querySelectorAll('.bar-fill');
+    
+    barFills.forEach((bar, index) => {
+        const originalHeight = bar.style.height;
+        bar.style.height = '0%';
+        
+        // 延迟动画
+        setTimeout(() => {
+            bar.style.height = originalHeight;
+        }, index * 150);
+        
+        // 添加点击交互
+        bar.addEventListener('click', () => {
+            showRegionDetails(bar);
+        });
+    });
+}
+
+// 环形图动画初始化
+function initializeRingChartAnimations() {
+    const ringCircle = document.querySelector('.ring-svg circle:last-child');
+    
+    if (ringCircle) {
+        const originalOffset = ringCircle.getAttribute('stroke-dashoffset');
+        ringCircle.setAttribute('stroke-dashoffset', '282');
+        
+        setTimeout(() => {
+            ringCircle.setAttribute('stroke-dashoffset', originalOffset);
+        }, 300);
+    }
+    
+    // 匹配度条形动画
+    const levelFills = document.querySelectorAll('.level-fill');
+    levelFills.forEach((fill, index) => {
+        const originalWidth = fill.style.width;
+        fill.style.width = '0%';
+        
+        setTimeout(() => {
+            fill.style.width = originalWidth;
+        }, 800 + index * 150);
+    });
+}
+
+// 更新图表数据
+function updateChartsData(policyData) {
+    console.log('📊 更新图表数据...');
+    
+    if (!policyData || policyData.length === 0) {
+        console.log('⚠️ 没有政策数据，使用默认图表数据');
+        return;
+    }
+    
+    // 统计政策类型分布
+    const typeStats = calculatePolicyTypeStats(policyData);
+    updatePieChart(typeStats);
+    
+    // 统计地区分布
+    const regionStats = calculateRegionStats(policyData);
+    updateBarChart(regionStats);
+    
+    // 更新总数显示
+    updateTotalPoliciesCount(policyData.length);
+    
+    // 重新触发动画
+    setTimeout(() => {
+        initializePieChartAnimations();
+        initializeBarChartAnimations();
+    }, 200);
+}
+
+// 计算政策类型统计
+function calculatePolicyTypeStats(policies) {
+    const stats = {
+        grant: 0,      // 资金补贴
+        tax: 0,        // 税收优惠
+        loan: 0,       // 贷款支持
+        other: 0       // 其他支持
+    };
+    
+    policies.forEach(policy => {
+        const type = policy.support_type || 'other';
+        if (stats.hasOwnProperty(type)) {
+            stats[type]++;
+        } else {
+            stats.other++;
+        }
+    });
+    
+    return stats;
+}
+
+// 计算地区分布统计
+function calculateRegionStats(policies) {
+    const regionCount = {};
+    
+    policies.forEach(policy => {
+        const region = policy.region || '其他地区';
+        regionCount[region] = (regionCount[region] || 0) + 1;
+    });
+    
+    // 排序并取前4个地区
+    const sortedRegions = Object.entries(regionCount)
+        .sort(([,a], [,b]) => b - a)
+        .slice(0, 4);
+    
+    return sortedRegions;
+}
+
+// 更新饼图
+function updatePieChart(typeStats) {
+    const total = Object.values(typeStats).reduce((sum, count) => sum + count, 0);
+    
+    if (total === 0) return;
+    
+    const percentages = {
+        grant: (typeStats.grant / total) * 100,
+        tax: (typeStats.tax / total) * 100,
+        loan: (typeStats.loan / total) * 100,
+        other: (typeStats.other / total) * 100
+    };
+    
+    // 更新图例
+    const legendItems = document.querySelectorAll('.legend-item span');
+    if (legendItems.length >= 4) {
+        legendItems[0].textContent = `资金补贴 (${typeStats.grant})`;
+        legendItems[1].textContent = `税收优惠 (${typeStats.tax})`;
+        legendItems[2].textContent = `贷款支持 (${typeStats.loan})`;
+        legendItems[3].textContent = `其他支持 (${typeStats.other})`;
+    }
+    
+    // 更新SVG路径（这里保持现有的视觉效果，实际项目中可以动态计算）
+    console.log('📈 政策类型分布:', percentages);
+}
+
+// 更新柱状图
+function updateBarChart(regionStats) {
+    const barItems = document.querySelectorAll('.bar-item');
+    const maxCount = regionStats.length > 0 ? regionStats[0][1] : 0;
+    
+    regionStats.forEach((region, index) => {
+        if (index < barItems.length) {
+            const [regionName, count] = region;
+            const barItem = barItems[index];
+            const barValue = barItem.querySelector('.bar-value');
+            const barLabel = barItem.querySelector('.bar-label');
+            const barFill = barItem.querySelector('.bar-fill');
+            
+            if (barValue) barValue.textContent = count;
+            if (barLabel) barLabel.textContent = regionName;
+            
+            // 计算高度百分比
+            const heightPercentage = maxCount > 0 ? (count / maxCount) * 85 : 0;
+            if (barFill) {
+                barFill.style.height = heightPercentage + '%';
+            }
+        }
+    });
+}
+
+// 更新政策总数
+function updateTotalPoliciesCount(count) {
+    const totalPoliciesEl = document.querySelector('.total-policies');
+    if (totalPoliciesEl) {
+        animateNumber(totalPoliciesEl, parseInt(totalPoliciesEl.textContent) || 0, count);
+    }
+    
+    // 同时更新右侧统计卡片
+    const statNumbers = document.querySelectorAll('.stat-number');
+    if (statNumbers.length > 0) {
+        animateNumber(statNumbers[0], parseInt(statNumbers[0].textContent.replace(/[^\d]/g, '')) || 0, count);
+    }
+}
+
+// 显示地区详情
+function showRegionDetails(barElement) {
+    const barItem = barElement.closest('.bar-item');
+    const regionName = barItem.querySelector('.bar-label').textContent;
+    const count = barItem.querySelector('.bar-value').textContent;
+    
+    showNotification(`${regionName}共有${count}项政策`, 'info');
+    
+    // 可以扩展为显示该地区的政策详情
+    console.log(`🏢 查看${regionName}的政策详情 (${count}项)`);
+}
+
+// 图表交互事件绑定
+function bindChartEvents() {
+    // 饼图区域点击事件
+    const pieChart = document.querySelector('.pie-chart');
+    if (pieChart) {
+        pieChart.addEventListener('click', (e) => {
+            if (e.target.tagName === 'circle') {
+                showPolicyTypeDetails(e.target);
+            }
+        });
+    }
+    
+    // 匹配度统计点击事件
+    const matchLevels = document.querySelectorAll('.match-level');
+    matchLevels.forEach(level => {
+        level.addEventListener('click', () => {
+            showMatchLevelDetails(level);
+        });
+        
+        level.style.cursor = 'pointer';
+    });
+}
+
+// 显示政策类型详情
+function showPolicyTypeDetails(circleElement) {
+    // 根据circle的颜色确定类型
+    const stroke = circleElement.getAttribute('stroke');
+    let typeName = '';
+    
+    switch (stroke) {
+        case '#8b5cf6':
+            typeName = '资金补贴';
+            break;
+        case '#ec4899':
+            typeName = '税收优惠';
+            break;
+        case '#10b981':
+            typeName = '贷款支持';
+            break;
+        case '#f59e0b':
+            typeName = '其他支持';
+            break;
+    }
+    
+    if (typeName) {
+        showNotification(`查看${typeName}类政策详情`, 'info');
+        console.log(`📊 查看${typeName}政策分布`);
+    }
+}
+
+// 显示匹配度级别详情
+function showMatchLevelDetails(levelElement) {
+    const label = levelElement.querySelector('.level-label').textContent;
+    const count = levelElement.querySelector('.level-count').textContent;
+    
+    showNotification(`${label}政策：${count}项`, 'info');
+    console.log(`🎯 ${label}详情: ${count}项政策`);
+}
+
+// 数字动画函数（改进版）
+function animateNumber(element, fromValue, toValue, duration = 1000) {
+    const startTime = performance.now();
+    const difference = toValue - fromValue;
+    
+    function updateNumber(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        // 使用缓动函数
+        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
+        const currentValue = Math.round(fromValue + difference * easeOutCubic);
+        
+        // 格式化数字显示
+        if (element.textContent.includes(',')) {
+            element.textContent = currentValue.toLocaleString();
+        } else {
+            element.textContent = currentValue;
+        }
+        
+        if (progress < 1) {
+            requestAnimationFrame(updateNumber);
+        }
+    }
+    
+    requestAnimationFrame(updateNumber);
+}
+
+// 导出函数供其他模块使用
+window.PolicyCharts = {
+    initializeCharts,
+    updateChartsData,
+    bindChartEvents
+}; 
