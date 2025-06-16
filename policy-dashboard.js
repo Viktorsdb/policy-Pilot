@@ -318,7 +318,6 @@ async function loadPoliciesFromAPI() {
         console.error('加载政策数据失败:', error);
         // 使用备用政策数据
         loadFallbackPolicies();
-        showNotification('后端服务暂时不可用，显示备用政策数据', 'warning');
     } finally {
         isLoading = false;
         hideLoadingState();
@@ -570,7 +569,6 @@ async function loadMatchedPolicies(companyInfo) {
         
     } catch (error) {
         console.error('政策匹配失败:', error);
-        showNotification('政策匹配失败，将显示默认政策列表', 'warning');
         
         // 如果匹配失败，使用备用政策数据
         loadFallbackPolicies();
@@ -595,7 +593,6 @@ async function loadEnhancedPolicies() {
                 }));
                 
                 displayAllPolicies(policies);
-                showNotification('已显示推荐政策，完善企业信息可获得更精准匹配', 'info');
             } else {
                 throw new Error('增强政策API返回格式错误');
             }
@@ -613,7 +610,6 @@ async function loadEnhancedPolicies() {
             const defaultData = await defaultResponse.json();
                 if (defaultData.success && defaultData.data.policies) {
             displayAllPolicies(defaultData.data.policies);
-                    showNotification('已显示基础政策列表', 'info');
         } else {
                     throw new Error('基础政策API返回格式错误');
                 }
