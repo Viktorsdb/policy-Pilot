@@ -814,10 +814,6 @@ function createPolicyCard(policy, index, isMatched = false) {
         ` : ''}
         
         <div class="policy-actions">
-            <button class="action-btn secondary" onclick="showPolicyDetail('${policy.policy_id || policy.id}')">
-                <i class="fas fa-info-circle"></i>
-                查看详情
-            </button>
             ${policy.source_url ? `
                 <button class="action-btn primary" onclick="openPolicyLink('${policy.source_url}')">
                     <i class="fas fa-external-link-alt"></i>
@@ -889,298 +885,6 @@ function jumpToAIConsult() {
     setTimeout(() => {
         window.location.href = 'ai-chat.html';
     }, 300);
-}
-
-// 显示政策详情
-async function showPolicyDetail(policyId) {
-    try {
-        // 从匹配结果中查找政策
-        let policy = matchedPolicies.find(p => (p.policy_id || p.id) === policyId);
-        
-        // 如果没找到，从API获取
-        if (!policy) {
-            const response = await fetch(`${API_BASE_URL}/policies/${policyId}`);
-            if (response.ok) {
-                const data = await response.json();
-                policy = data.data;
-            }
-        }
-        
-        if (!policy) {
-            showNotification('未找到政策详情', 'error');
-            return;
-        }
-        
-        const modal = createPolicyModal(policy);
-        document.body.appendChild(modal);
-        
-        // 显示动画
-        requestAnimationFrame(() => {
-            modal.style.opacity = '1';
-            modal.querySelector('.modal-content').style.transform = 'scale(1)';
-        });
-        
-    } catch (error) {
-        console.error('获取政策详情失败:', error);
-        showNotification('获取政策详情失败', 'error');
-    }
-}
-
-// 创建政策详情模态框
-function createPolicyModal(policy) {
-    const modal = document.createElement('div');
-    modal.className = 'policy-modal';
-    modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(10px);
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    `;
-    
-    const matchScore = policy.match_score ? Math.round(policy.match_score * 100) : null;
-    const maxAmount = policy.max_amount ? formatAmount(policy.max_amount) : '未限定';
-    
-    modal.innerHTML = `
-        <div class="modal-content" style="
-            background: white;
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 700px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
-            transform: scale(0.9);
-            transition: transform 0.3s ease;
-        ">
-            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
-                <h2 style="color: #1f2937; font-size: 1.75rem; font-weight: 700; margin: 0; line-height: 1.2;">${policy.policy_name}</h2>
-                <button class="modal-close" onclick="closeModal()" style="
-                    background: transparent;
-                    border: none;
-                    font-size: 24px;
-                    color: #6b7280;
-                    cursor: pointer;
-                    padding: 4px;
-                    border-radius: 8px;
-                    transition: all 0.2s ease;
-                ">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="modal-body">
-                ${matchScore ? `
-                    <div class="match-rate" style="
-                        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
-                        padding: 16px;
-                        border-radius: 12px;
-                        margin-bottom: 24px;
-                        border-left: 4px solid #10b981;
-                    ">
-                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                            <i class="fas fa-chart-line" style="color: #10b981;"></i>
-                            <span style="font-weight: 600; color: #1f2937;">匹配度评估</span>
-                        </div>
-                        <div style="font-size: 2rem; font-weight: 800; color: #10b981;">${matchScore}%</div>
-                        <div style="font-size: 0.875rem; color: #6b7280;">基于您的企业信息分析</div>
-                    </div>
-                ` : ''}
-                
-                <div class="policy-basic-info" style="
-                    display: grid;
-                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                    gap: 16px;
-                    margin-bottom: 24px;
-                ">
-                    <div class="info-card" style="padding: 16px; background: #f8fafc; border-radius: 12px;">
-                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 4px;">适用地区</div>
-                        <div style="color: #1f2937; font-weight: 600;">${policy.region || '未指定'}</div>
-                    </div>
-                    <div class="info-card" style="padding: 16px; background: #f8fafc; border-radius: 12px;">
-                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 4px;">最高金额</div>
-                        <div style="color: #1f2937; font-weight: 600;">${maxAmount}</div>
-                    </div>
-                    <div class="info-card" style="padding: 16px; background: #f8fafc; border-radius: 12px;">
-                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 4px;">发布时间</div>
-                        <div style="color: #1f2937; font-weight: 600;">${policy.publish_date ? formatDate(policy.publish_date) : '未知时间'}</div>
-                    </div>
-                </div>
-                
-                ${policy.industry_tags && policy.industry_tags.length > 0 ? `
-                    <div class="policy-section" style="margin-bottom: 24px;">
-                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-tags" style="color: #f59e0b;"></i>
-                            适用行业
-                        </h3>
-                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-                            ${policy.industry_tags.map(tag => `
-                                <span style="
-                                    background: linear-gradient(135deg, #3b82f6, #2563eb);
-                                    color: white;
-                                    padding: 6px 12px;
-                                    border-radius: 20px;
-                                    font-size: 0.875rem;
-                                    font-weight: 500;
-                                ">${tag}</span>
-                            `).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-                
-                ${policy.matched_requirements && policy.matched_requirements.length > 0 ? `
-                    <div class="policy-section" style="margin-bottom: 24px;">
-                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
-                            符合条件
-                        </h3>
-                        <ul style="list-style: none; padding: 0;">
-                            ${policy.matched_requirements.map(req => `
-                                <li style="
-                                    padding: 8px 0;
-                                    color: #374151;
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                ">
-                                    <i class="fas fa-check" style="color: #10b981; font-size: 14px;"></i>
-                                    ${req}
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-                
-                ${policy.missing_requirements && policy.missing_requirements.length > 0 ? `
-                    <div class="policy-section" style="margin-bottom: 24px;">
-                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
-                            需要完善
-                        </h3>
-                        <ul style="list-style: none; padding: 0;">
-                            ${policy.missing_requirements.map(req => `
-                                <li style="
-                                    padding: 8px 0;
-                                    color: #374151;
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                ">
-                                    <i class="fas fa-exclamation-circle" style="color: #f59e0b; font-size: 14px;"></i>
-                                    ${req}
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-                
-                ${policy.requirements && policy.requirements.length > 0 ? `
-                    <div class="policy-section" style="margin-bottom: 24px;">
-                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-clipboard-check" style="color: #8b5cf6;"></i>
-                            申请条件
-                        </h3>
-                        <ul style="list-style: none; padding: 0;">
-                            ${policy.requirements.map(req => `
-                                <li style="
-                                    padding: 8px 0;
-                                    color: #374151;
-                                    display: flex;
-                                    align-items: center;
-                                    gap: 8px;
-                                ">
-                                    <i class="fas fa-dot-circle" style="color: #8b5cf6; font-size: 14px;"></i>
-                                    ${req}
-                                </li>
-                            `).join('')}
-                        </ul>
-                    </div>
-                ` : ''}
-                
-                ${policy.recommendation ? `
-                    <div class="policy-section" style="margin-bottom: 24px;">
-                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-                            <i class="fas fa-lightbulb" style="color: #f59e0b;"></i>
-                            AI推荐建议
-                        </h3>
-                        <div style="
-                            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
-                            padding: 16px;
-                            border-radius: 12px;
-                            border-left: 4px solid #f59e0b;
-                            color: #374151;
-                            line-height: 1.6;
-                        ">
-                            ${policy.recommendation}
-                        </div>
-                    </div>
-                ` : ''}
-                
-                <div class="modal-actions" style="
-                    display: flex;
-                    gap: 12px;
-                    margin-top: 32px;
-                    padding-top: 24px;
-                    border-top: 1px solid #e5e7eb;
-                ">
-                    <button onclick="openPolicyLink('${policy.source_url}')" style="
-                        flex: 1;
-                        background: linear-gradient(135deg, #3b82f6, #2563eb);
-                        color: white;
-                        border: none;
-                        padding: 12px 24px;
-                        border-radius: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                    ">
-                        <i class="fas fa-external-link-alt"></i>
-                        查看政策原文
-                    </button>
-                    <button onclick="consultAI('${policy.policy_name}')" style="
-                        flex: 1;
-                        background: linear-gradient(135deg, #10b981, #059669);
-                        color: white;
-                        border: none;
-                        padding: 12px 24px;
-                        border-radius: 12px;
-                        font-weight: 600;
-                        cursor: pointer;
-                        transition: all 0.2s ease;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 8px;
-                    ">
-                        <i class="fas fa-robot"></i>
-                        AI智能咨询
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-    
-    // 点击模态框外部关闭
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
-            closeModal();
-        }
-    });
-    
-    return modal;
 }
 
 // 格式化金额
@@ -1332,19 +1036,6 @@ function loadDefaultPolicies() {
     displayAllPolicies(defaultPolicies);
 }
 
-// 关闭模态框
-function closeModal() {
-    const modal = document.querySelector('.policy-modal');
-    if (modal) {
-        modal.style.opacity = '0';
-        modal.querySelector('.modal-content').style.transform = 'scale(0.9)';
-        
-        setTimeout(() => {
-            modal.remove();
-        }, 300);
-    }
-}
-
 // 刷新政策数据
 function refreshPolicies() {
     if (isLoading) return;
@@ -1380,8 +1071,6 @@ function openAIConsult() {
 
 // AI咨询特定政策
 function consultAI(policyTitle) {
-    closeModal();
-    
     // 保存咨询主题到session storage
     sessionStorage.setItem('aiConsultTopic', policyTitle);
     
@@ -1476,10 +1165,6 @@ function animateCounter(element) {
 function bindEvents() {
     // 键盘快捷键
     document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape') {
-            closeModal();
-        }
-        
         if (e.ctrlKey && e.key === 'r') {
             e.preventDefault();
             refreshPolicies();
