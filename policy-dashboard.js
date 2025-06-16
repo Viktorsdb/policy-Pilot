@@ -25,10 +25,6 @@ document.addEventListener('DOMContentLoaded', function() {
     loadPoliciesFromAPI();
     initializeStatCounters();
     addRefreshButton();
-    setTimeout(() => {
-        initializeCharts();
-        bindChartEvents();
-    }, 1000);
 });
 
 // 添加刷新数据按钮
@@ -634,67 +630,57 @@ async function loadEnhancedPolicies() {
 
 // 显示匹配的政策
 function displayMatchedPolicies(matches) {
-    policiesData = matches.map(match => match.policy);
-    const container = document.querySelector('.policies-container');
+    const policiesContainer = document.querySelector('.policies-container');
+    if (!policiesContainer) return;
     
-    if (!container) return;
-    
-    container.innerHTML = '';
+    policiesContainer.innerHTML = '';
     
     if (matches.length === 0) {
-        container.innerHTML = `
+        policiesContainer.innerHTML = `
             <div class="no-policies">
                 <i class="fas fa-search"></i>
                 <h3>暂未找到匹配的政策</h3>
-                <p>建议完善企业信息或联系AI助手获取个性化推荐</p>
+                <p>请检查企业信息或联系客服</p>
             </div>
         `;
         return;
     }
     
-    matches.forEach((match, index) => {
-        const policyCard = createPolicyCard(match.policy, index, true);
-        container.appendChild(policyCard);
+    matches.forEach((policy, index) => {
+        const policyCard = createPolicyCard(policy, index, true);
+        policiesContainer.appendChild(policyCard);
     });
-    
-    // 更新图表数据
-    setTimeout(() => {
-        updateChartsData(policiesData);
-    }, 300);
 }
 
 // 显示所有政策
 function displayAllPolicies(policies) {
-    policiesData = policies;
-    const container = document.querySelector('.policies-container');
+    const policiesContainer = document.querySelector('.policies-container');
+    if (!policiesContainer) return;
     
-    if (!container) return;
+    policiesContainer.innerHTML = '';
     
-    container.innerHTML = '';
-    
-    if (policies.length === 0) {
-        container.innerHTML = `
+    if (!policies || policies.length === 0) {
+        policiesContainer.innerHTML = `
             <div class="no-policies">
-                <i class="fas fa-exclamation-circle"></i>
+                <i class="fas fa-search"></i>
                 <h3>暂无政策数据</h3>
-                <p>请检查网络连接或稍后重试</p>
+                <p>请稍后重试或联系客服</p>
             </div>
         `;
         return;
     }
     
-    // 按匹配度排序（如果有匹配度）
-    const sortedPolicies = policies.sort((a, b) => (b.match_score || 0) - (a.match_score || 0));
-    
-    sortedPolicies.forEach((policy, index) => {
-        const policyCard = createPolicyCard(policy, index, false);
-        container.appendChild(policyCard);
+    policies.forEach((policy, index) => {
+        // 确保每个政策都有匹配度信息
+        const enhancedPolicy = {
+            ...policy,
+            match_score: policy.match_score || policy.base_score || 0.6,
+            recommendation: policy.recommendation || '完善企业信息可获得更精准的政策匹配建议。'
+        };
+        
+        const policyCard = createPolicyCard(enhancedPolicy, index, !!enhancedPolicy.match_score);
+        policiesContainer.appendChild(policyCard);
     });
-    
-    // 更新图表数据
-    setTimeout(() => {
-        updateChartsData(policiesData);
-    }, 300);
 }
 
 // 创建政策卡片
@@ -828,6 +814,10 @@ function createPolicyCard(policy, index, isMatched = false) {
         ` : ''}
         
         <div class="policy-actions">
+            <button class="action-btn secondary" onclick="showPolicyDetail('${policy.policy_id || policy.id}')">
+                <i class="fas fa-info-circle"></i>
+                查看详情
+            </button>
             ${policy.source_url ? `
                 <button class="action-btn primary" onclick="openPolicyLink('${policy.source_url}')">
                     <i class="fas fa-external-link-alt"></i>
@@ -899,6 +889,298 @@ function jumpToAIConsult() {
     setTimeout(() => {
         window.location.href = 'ai-chat.html';
     }, 300);
+}
+
+// 显示政策详情
+async function showPolicyDetail(policyId) {
+    try {
+        // 从匹配结果中查找政策
+        let policy = matchedPolicies.find(p => (p.policy_id || p.id) === policyId);
+        
+        // 如果没找到，从API获取
+        if (!policy) {
+            const response = await fetch(`${API_BASE_URL}/policies/${policyId}`);
+            if (response.ok) {
+                const data = await response.json();
+                policy = data.data;
+            }
+        }
+        
+        if (!policy) {
+            showNotification('未找到政策详情', 'error');
+            return;
+        }
+        
+        const modal = createPolicyModal(policy);
+        document.body.appendChild(modal);
+        
+        // 显示动画
+        requestAnimationFrame(() => {
+            modal.style.opacity = '1';
+            modal.querySelector('.modal-content').style.transform = 'scale(1)';
+        });
+        
+    } catch (error) {
+        console.error('获取政策详情失败:', error);
+        showNotification('获取政策详情失败', 'error');
+    }
+}
+
+// 创建政策详情模态框
+function createPolicyModal(policy) {
+    const modal = document.createElement('div');
+    modal.className = 'policy-modal';
+    modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(10px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    const matchScore = policy.match_score ? Math.round(policy.match_score * 100) : null;
+    const maxAmount = policy.max_amount ? formatAmount(policy.max_amount) : '未限定';
+    
+    modal.innerHTML = `
+        <div class="modal-content" style="
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        ">
+            <div class="modal-header" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px;">
+                <h2 style="color: #1f2937; font-size: 1.75rem; font-weight: 700; margin: 0; line-height: 1.2;">${policy.policy_name}</h2>
+                <button class="modal-close" onclick="closeModal()" style="
+                    background: transparent;
+                    border: none;
+                    font-size: 24px;
+                    color: #6b7280;
+                    cursor: pointer;
+                    padding: 4px;
+                    border-radius: 8px;
+                    transition: all 0.2s ease;
+                ">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="modal-body">
+                ${matchScore ? `
+                    <div class="match-rate" style="
+                        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1));
+                        padding: 16px;
+                        border-radius: 12px;
+                        margin-bottom: 24px;
+                        border-left: 4px solid #10b981;
+                    ">
+                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+                            <i class="fas fa-chart-line" style="color: #10b981;"></i>
+                            <span style="font-weight: 600; color: #1f2937;">匹配度评估</span>
+                        </div>
+                        <div style="font-size: 2rem; font-weight: 800; color: #10b981;">${matchScore}%</div>
+                        <div style="font-size: 0.875rem; color: #6b7280;">基于您的企业信息分析</div>
+                    </div>
+                ` : ''}
+                
+                <div class="policy-basic-info" style="
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 16px;
+                    margin-bottom: 24px;
+                ">
+                    <div class="info-card" style="padding: 16px; background: #f8fafc; border-radius: 12px;">
+                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 4px;">适用地区</div>
+                        <div style="color: #1f2937; font-weight: 600;">${policy.region || '未指定'}</div>
+                    </div>
+                    <div class="info-card" style="padding: 16px; background: #f8fafc; border-radius: 12px;">
+                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 4px;">最高金额</div>
+                        <div style="color: #1f2937; font-weight: 600;">${maxAmount}</div>
+                    </div>
+                    <div class="info-card" style="padding: 16px; background: #f8fafc; border-radius: 12px;">
+                        <div style="color: #6b7280; font-size: 0.875rem; margin-bottom: 4px;">发布时间</div>
+                        <div style="color: #1f2937; font-weight: 600;">${policy.publish_date ? formatDate(policy.publish_date) : '未知时间'}</div>
+                    </div>
+                </div>
+                
+                ${policy.industry_tags && policy.industry_tags.length > 0 ? `
+                    <div class="policy-section" style="margin-bottom: 24px;">
+                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-tags" style="color: #f59e0b;"></i>
+                            适用行业
+                        </h3>
+                        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+                            ${policy.industry_tags.map(tag => `
+                                <span style="
+                                    background: linear-gradient(135deg, #3b82f6, #2563eb);
+                                    color: white;
+                                    padding: 6px 12px;
+                                    border-radius: 20px;
+                                    font-size: 0.875rem;
+                                    font-weight: 500;
+                                ">${tag}</span>
+                            `).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                ${policy.matched_requirements && policy.matched_requirements.length > 0 ? `
+                    <div class="policy-section" style="margin-bottom: 24px;">
+                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                            符合条件
+                        </h3>
+                        <ul style="list-style: none; padding: 0;">
+                            ${policy.matched_requirements.map(req => `
+                                <li style="
+                                    padding: 8px 0;
+                                    color: #374151;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                ">
+                                    <i class="fas fa-check" style="color: #10b981; font-size: 14px;"></i>
+                                    ${req}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                
+                ${policy.missing_requirements && policy.missing_requirements.length > 0 ? `
+                    <div class="policy-section" style="margin-bottom: 24px;">
+                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-exclamation-triangle" style="color: #f59e0b;"></i>
+                            需要完善
+                        </h3>
+                        <ul style="list-style: none; padding: 0;">
+                            ${policy.missing_requirements.map(req => `
+                                <li style="
+                                    padding: 8px 0;
+                                    color: #374151;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                ">
+                                    <i class="fas fa-exclamation-circle" style="color: #f59e0b; font-size: 14px;"></i>
+                                    ${req}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                
+                ${policy.requirements && policy.requirements.length > 0 ? `
+                    <div class="policy-section" style="margin-bottom: 24px;">
+                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-clipboard-check" style="color: #8b5cf6;"></i>
+                            申请条件
+                        </h3>
+                        <ul style="list-style: none; padding: 0;">
+                            ${policy.requirements.map(req => `
+                                <li style="
+                                    padding: 8px 0;
+                                    color: #374151;
+                                    display: flex;
+                                    align-items: center;
+                                    gap: 8px;
+                                ">
+                                    <i class="fas fa-dot-circle" style="color: #8b5cf6; font-size: 14px;"></i>
+                                    ${req}
+                                </li>
+                            `).join('')}
+                        </ul>
+                    </div>
+                ` : ''}
+                
+                ${policy.recommendation ? `
+                    <div class="policy-section" style="margin-bottom: 24px;">
+                        <h3 style="color: #1f2937; font-size: 1.125rem; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-lightbulb" style="color: #f59e0b;"></i>
+                            AI推荐建议
+                        </h3>
+                        <div style="
+                            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(245, 158, 11, 0.1));
+                            padding: 16px;
+                            border-radius: 12px;
+                            border-left: 4px solid #f59e0b;
+                            color: #374151;
+                            line-height: 1.6;
+                        ">
+                            ${policy.recommendation}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <div class="modal-actions" style="
+                    display: flex;
+                    gap: 12px;
+                    margin-top: 32px;
+                    padding-top: 24px;
+                    border-top: 1px solid #e5e7eb;
+                ">
+                    <button onclick="openPolicyLink('${policy.source_url}')" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #3b82f6, #2563eb);
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    ">
+                        <i class="fas fa-external-link-alt"></i>
+                        查看政策原文
+                    </button>
+                    <button onclick="consultAI('${policy.policy_name}')" style="
+                        flex: 1;
+                        background: linear-gradient(135deg, #10b981, #059669);
+                        color: white;
+                        border: none;
+                        padding: 12px 24px;
+                        border-radius: 12px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 8px;
+                    ">
+                        <i class="fas fa-robot"></i>
+                        AI智能咨询
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    // 点击模态框外部关闭
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+    
+    return modal;
 }
 
 // 格式化金额
@@ -1050,6 +1332,19 @@ function loadDefaultPolicies() {
     displayAllPolicies(defaultPolicies);
 }
 
+// 关闭模态框
+function closeModal() {
+    const modal = document.querySelector('.policy-modal');
+    if (modal) {
+        modal.style.opacity = '0';
+        modal.querySelector('.modal-content').style.transform = 'scale(0.9)';
+        
+        setTimeout(() => {
+            modal.remove();
+        }, 300);
+    }
+}
+
 // 刷新政策数据
 function refreshPolicies() {
     if (isLoading) return;
@@ -1085,6 +1380,8 @@ function openAIConsult() {
 
 // AI咨询特定政策
 function consultAI(policyTitle) {
+    closeModal();
+    
     // 保存咨询主题到session storage
     sessionStorage.setItem('aiConsultTopic', policyTitle);
     
@@ -1179,6 +1476,10 @@ function animateCounter(element) {
 function bindEvents() {
     // 键盘快捷键
     document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeModal();
+        }
+        
         if (e.ctrlKey && e.key === 'r') {
             e.preventDefault();
             refreshPolicies();
@@ -1424,324 +1725,4 @@ function showMatchStatistics(matchData) {
         
         pageHeader.insertAdjacentHTML('afterend', matchStatsHtml);
     }
-}
-
-// 图表初始化和数据更新功能
-function initializeCharts() {
-    console.log('🎨 初始化图表...');
-    
-    // 延迟执行动画，确保DOM完全加载
-    setTimeout(() => {
-        initializePieChartAnimations();
-        initializeBarChartAnimations();
-        initializeRingChartAnimations();
-    }, 500);
-}
-
-// 饼图动画初始化
-function initializePieChartAnimations() {
-    const pieCircles = document.querySelectorAll('.pie-svg circle');
-    
-    pieCircles.forEach((circle, index) => {
-        // 设置初始状态
-        const originalDashArray = circle.getAttribute('stroke-dasharray');
-        circle.setAttribute('stroke-dasharray', '0 503');
-        
-        // 延迟动画
-        setTimeout(() => {
-            circle.setAttribute('stroke-dasharray', originalDashArray);
-        }, index * 200);
-        
-        // 添加悬停交互
-        circle.addEventListener('mouseenter', () => {
-            circle.style.filter = 'brightness(1.1)';
-            circle.style.strokeWidth = '22';
-        });
-        
-        circle.addEventListener('mouseleave', () => {
-            circle.style.filter = 'brightness(1)';
-            circle.style.strokeWidth = '20';
-        });
-    });
-}
-
-// 柱状图动画初始化
-function initializeBarChartAnimations() {
-    const barFills = document.querySelectorAll('.bar-fill');
-    
-    barFills.forEach((bar, index) => {
-        const originalHeight = bar.style.height;
-        bar.style.height = '0%';
-        
-        // 延迟动画
-        setTimeout(() => {
-            bar.style.height = originalHeight;
-        }, index * 150);
-        
-        // 添加点击交互
-        bar.addEventListener('click', () => {
-            showRegionDetails(bar);
-        });
-    });
-}
-
-// 环形图动画初始化
-function initializeRingChartAnimations() {
-    const ringCircle = document.querySelector('.ring-svg circle:last-child');
-    
-    if (ringCircle) {
-        const originalOffset = ringCircle.getAttribute('stroke-dashoffset');
-        ringCircle.setAttribute('stroke-dashoffset', '282');
-        
-        setTimeout(() => {
-            ringCircle.setAttribute('stroke-dashoffset', originalOffset);
-        }, 300);
-    }
-    
-    // 匹配度条形动画
-    const levelFills = document.querySelectorAll('.level-fill');
-    levelFills.forEach((fill, index) => {
-        const originalWidth = fill.style.width;
-        fill.style.width = '0%';
-        
-        setTimeout(() => {
-            fill.style.width = originalWidth;
-        }, 800 + index * 150);
-    });
-}
-
-// 更新图表数据
-function updateChartsData(policyData) {
-    console.log('📊 更新图表数据...');
-    
-    if (!policyData || policyData.length === 0) {
-        console.log('⚠️ 没有政策数据，使用默认图表数据');
-        return;
-    }
-    
-    // 统计政策类型分布
-    const typeStats = calculatePolicyTypeStats(policyData);
-    updatePieChart(typeStats);
-    
-    // 统计地区分布
-    const regionStats = calculateRegionStats(policyData);
-    updateBarChart(regionStats);
-    
-    // 更新总数显示
-    updateTotalPoliciesCount(policyData.length);
-    
-    // 重新触发动画
-    setTimeout(() => {
-        initializePieChartAnimations();
-        initializeBarChartAnimations();
-    }, 200);
-}
-
-// 计算政策类型统计
-function calculatePolicyTypeStats(policies) {
-    const stats = {
-        grant: 0,      // 资金补贴
-        tax: 0,        // 税收优惠
-        loan: 0,       // 贷款支持
-        other: 0       // 其他支持
-    };
-    
-    policies.forEach(policy => {
-        const type = policy.support_type || 'other';
-        if (stats.hasOwnProperty(type)) {
-            stats[type]++;
-        } else {
-            stats.other++;
-        }
-    });
-    
-    return stats;
-}
-
-// 计算地区分布统计
-function calculateRegionStats(policies) {
-    const regionCount = {};
-    
-    policies.forEach(policy => {
-        const region = policy.region || '其他地区';
-        regionCount[region] = (regionCount[region] || 0) + 1;
-    });
-    
-    // 排序并取前4个地区
-    const sortedRegions = Object.entries(regionCount)
-        .sort(([,a], [,b]) => b - a)
-        .slice(0, 4);
-    
-    return sortedRegions;
-}
-
-// 更新饼图
-function updatePieChart(typeStats) {
-    const total = Object.values(typeStats).reduce((sum, count) => sum + count, 0);
-    
-    if (total === 0) return;
-    
-    const percentages = {
-        grant: (typeStats.grant / total) * 100,
-        tax: (typeStats.tax / total) * 100,
-        loan: (typeStats.loan / total) * 100,
-        other: (typeStats.other / total) * 100
-    };
-    
-    // 更新图例
-    const legendItems = document.querySelectorAll('.legend-item span');
-    if (legendItems.length >= 4) {
-        legendItems[0].textContent = `资金补贴 (${typeStats.grant})`;
-        legendItems[1].textContent = `税收优惠 (${typeStats.tax})`;
-        legendItems[2].textContent = `贷款支持 (${typeStats.loan})`;
-        legendItems[3].textContent = `其他支持 (${typeStats.other})`;
-    }
-    
-    // 更新SVG路径（这里保持现有的视觉效果，实际项目中可以动态计算）
-    console.log('📈 政策类型分布:', percentages);
-}
-
-// 更新柱状图
-function updateBarChart(regionStats) {
-    const barItems = document.querySelectorAll('.bar-item');
-    const maxCount = regionStats.length > 0 ? regionStats[0][1] : 0;
-    
-    regionStats.forEach((region, index) => {
-        if (index < barItems.length) {
-            const [regionName, count] = region;
-            const barItem = barItems[index];
-            const barValue = barItem.querySelector('.bar-value');
-            const barLabel = barItem.querySelector('.bar-label');
-            const barFill = barItem.querySelector('.bar-fill');
-            
-            if (barValue) barValue.textContent = count;
-            if (barLabel) barLabel.textContent = regionName;
-            
-            // 计算高度百分比
-            const heightPercentage = maxCount > 0 ? (count / maxCount) * 85 : 0;
-            if (barFill) {
-                barFill.style.height = heightPercentage + '%';
-            }
-        }
-    });
-}
-
-// 更新政策总数
-function updateTotalPoliciesCount(count) {
-    const totalPoliciesEl = document.querySelector('.total-policies');
-    if (totalPoliciesEl) {
-        animateNumber(totalPoliciesEl, parseInt(totalPoliciesEl.textContent) || 0, count);
-    }
-    
-    // 同时更新右侧统计卡片
-    const statNumbers = document.querySelectorAll('.stat-number');
-    if (statNumbers.length > 0) {
-        animateNumber(statNumbers[0], parseInt(statNumbers[0].textContent.replace(/[^\d]/g, '')) || 0, count);
-    }
-}
-
-// 显示地区详情
-function showRegionDetails(barElement) {
-    const barItem = barElement.closest('.bar-item');
-    const regionName = barItem.querySelector('.bar-label').textContent;
-    const count = barItem.querySelector('.bar-value').textContent;
-    
-    showNotification(`${regionName}共有${count}项政策`, 'info');
-    
-    // 可以扩展为显示该地区的政策详情
-    console.log(`🏢 查看${regionName}的政策详情 (${count}项)`);
-}
-
-// 图表交互事件绑定
-function bindChartEvents() {
-    // 饼图区域点击事件
-    const pieChart = document.querySelector('.pie-chart');
-    if (pieChart) {
-        pieChart.addEventListener('click', (e) => {
-            if (e.target.tagName === 'circle') {
-                showPolicyTypeDetails(e.target);
-            }
-        });
-    }
-    
-    // 匹配度统计点击事件
-    const matchLevels = document.querySelectorAll('.match-level');
-    matchLevels.forEach(level => {
-        level.addEventListener('click', () => {
-            showMatchLevelDetails(level);
-        });
-        
-        level.style.cursor = 'pointer';
-    });
-}
-
-// 显示政策类型详情
-function showPolicyTypeDetails(circleElement) {
-    // 根据circle的颜色确定类型
-    const stroke = circleElement.getAttribute('stroke');
-    let typeName = '';
-    
-    switch (stroke) {
-        case '#8b5cf6':
-            typeName = '资金补贴';
-            break;
-        case '#ec4899':
-            typeName = '税收优惠';
-            break;
-        case '#10b981':
-            typeName = '贷款支持';
-            break;
-        case '#f59e0b':
-            typeName = '其他支持';
-            break;
-    }
-    
-    if (typeName) {
-        showNotification(`查看${typeName}类政策详情`, 'info');
-        console.log(`📊 查看${typeName}政策分布`);
-    }
-}
-
-// 显示匹配度级别详情
-function showMatchLevelDetails(levelElement) {
-    const label = levelElement.querySelector('.level-label').textContent;
-    const count = levelElement.querySelector('.level-count').textContent;
-    
-    showNotification(`${label}政策：${count}项`, 'info');
-    console.log(`🎯 ${label}详情: ${count}项政策`);
-}
-
-// 数字动画函数（改进版）
-function animateNumber(element, fromValue, toValue, duration = 1000) {
-    const startTime = performance.now();
-    const difference = toValue - fromValue;
-    
-    function updateNumber(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // 使用缓动函数
-        const easeOutCubic = 1 - Math.pow(1 - progress, 3);
-        const currentValue = Math.round(fromValue + difference * easeOutCubic);
-        
-        // 格式化数字显示
-        if (element.textContent.includes(',')) {
-            element.textContent = currentValue.toLocaleString();
-        } else {
-            element.textContent = currentValue;
-        }
-        
-        if (progress < 1) {
-            requestAnimationFrame(updateNumber);
-        }
-    }
-    
-    requestAnimationFrame(updateNumber);
-}
-
-// 导出函数供其他模块使用
-window.PolicyCharts = {
-    initializeCharts,
-    updateChartsData,
-    bindChartEvents
-}; 
+} 

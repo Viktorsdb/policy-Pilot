@@ -9,8 +9,30 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta name="description" content="PolicyPilot - 基于AI的智能政策匹配平台，帮助企业发现适合的政策机会">
     <meta name="keywords" content="政策匹配,AI咨询,企业政策,政府补贴,创业扶持">
+    <!-- Chart.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 </head>
 <body>
+    <!-- 后端服务状态提示 -->
+    <div id="backendStatus" class="backend-status-banner" style="display: none;">
+        <div class="status-content">
+            <div class="status-info">
+                <i class="fas fa-info-circle"></i>
+                <span id="statusText">正在检查后端服务状态...</span>
+            </div>
+            <div class="status-actions">
+                <button id="deployBtn" class="deploy-btn" onclick="deployBackend()" style="display: none;">
+                    <i class="fas fa-rocket"></i>
+                    一键部署后端
+                </button>
+                <button class="close-btn" onclick="closeStatusBanner()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- 顶部设计横幅 -->
     <div class="design-banner">
         <h1 class="banner-title">PolicyPilot 政策智能体</h1>
@@ -90,9 +112,38 @@
                     <div class="analysis-left">
                         <h2 class="section-title">政策匹配分析</h2>
                         <div class="chart-container">
-                            <div class="chart-placeholder">
-                                <i class="fas fa-chart-bar"></i>
-                                <p class="chart-label">数据可视化图表区域</p>
+                            <div class="chart-header">
+                                <h3 class="chart-title">政策类型分布</h3>
+                                <div class="chart-controls">
+                                    <select id="chartPeriod" class="chart-select">
+                                        <option value="month">本月</option>
+                                        <option value="quarter">本季度</option>
+                                        <option value="year" selected>本年度</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <canvas id="policyChart" width="400" height="250"></canvas>
+                            <div class="chart-legend">
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #06b6d4;"></span>
+                                    <span class="legend-label">资金补贴</span>
+                                    <span class="legend-value">45%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #8b5cf6;"></span>
+                                    <span class="legend-label">税收优惠</span>
+                                    <span class="legend-value">28%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #10b981;"></span>
+                                    <span class="legend-label">创新券</span>
+                                    <span class="legend-value">18%</span>
+                                </div>
+                                <div class="legend-item">
+                                    <span class="legend-color" style="background: #f59e0b;"></span>
+                                    <span class="legend-label">其他</span>
+                                    <span class="legend-value">9%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -121,5 +172,6 @@
     </main>
 
     <script src="script.js"></script>
+    <script src="chart-config.js"></script>
 </body>
 </html> 
