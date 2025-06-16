@@ -7,15 +7,22 @@ let conversationId = null;
 let consultPolicy = null;
 let isConsultingPolicy = false;
 
-// 动态API配置
+// 动态API配置 - 支持多个后端服务
 const getApiBaseUrl = () => {
     // 如果是GitHub Pages环境
     if (window.location.hostname.includes('github.io')) {
-        return 'https://policy-pilot-viktorsdb.herokuapp.com/api/v1'; // 使用Heroku后端
+        // 优先尝试Render后端，然后降级到Heroku
+        return 'https://policy-pilot.onrender.com/api/v1';
     }
     // 本地开发环境
     return 'http://localhost:8001/api/v1';
 };
+
+// 备用API地址列表
+const BACKUP_API_URLS = [
+    'https://policy-pilot.onrender.com/api/v1',
+    'https://policy-pilot-viktorsdb.herokuapp.com/api/v1'
+];
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -214,59 +221,69 @@ async function sendMessage(customMessage = null) {
     }
 }
 
-// 调用DeepSeek API
+// 调用DeepSeek API - 支持多后端尝试
 async function callDeepSeekAPI(userMessage) {
-    try {
-        // 构建请求数据
-        const requestData = {
-            message: userMessage,
-            messages: messages.slice(-10).map(msg => ({
-                role: msg.sender === 'user' ? 'user' : 'assistant',
-                content: msg.text,
-                timestamp: msg.timestamp
-            })),
-            policy_context: consultPolicy ? {
-                policy_name: consultPolicy.policy_name,
-                region: consultPolicy.region,
-                support_type: consultPolicy.support_type,
-                max_amount: consultPolicy.max_amount,
-                deadline: consultPolicy.deadline,
-                industry_tags: consultPolicy.industry_tags,
-                requirements: consultPolicy.requirements
-            } : null,
-            stream: false
-        };
-        
-        // 发送请求到后端
-        const response = await fetch(`${API_BASE_URL}/ai/chat`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(requestData),
-            timeout: 30000 // 30秒超时
-        });
-        
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            throw new Error(errorData.detail || `HTTP错误: ${response.status}`);
+    // 构建请求数据
+    const requestData = {
+        message: userMessage,
+        messages: messages.slice(-10).map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
+            content: msg.text,
+            timestamp: msg.timestamp
+        })),
+        policy_context: consultPolicy ? {
+            policy_name: consultPolicy.policy_name,
+            region: consultPolicy.region,
+            support_type: consultPolicy.support_type,
+            max_amount: consultPolicy.max_amount,
+            deadline: consultPolicy.deadline,
+            industry_tags: consultPolicy.industry_tags,
+            requirements: consultPolicy.requirements
+        } : null,
+        stream: false
+    };
+    
+    // 尝试所有可用的后端服务
+    for (let i = 0; i < BACKUP_API_URLS.length; i++) {
+        const apiUrl = BACKUP_API_URLS[i];
+        try {
+            console.log(`🔗 尝试AI API: ${apiUrl}`);
+            
+            // 发送请求到后端
+            const response = await fetch(`${apiUrl}/ai/chat`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+                timeout: 25000 // 25秒超时
+            });
+            
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                console.log(`❌ AI API失败 (${apiUrl}): ${response.status}`);
+                continue; // 尝试下一个后端
+            }
+            
+            const data = await response.json();
+            
+            if (data.success && data.data.response) {
+                console.log(`✅ AI回复成功 (${apiUrl})，使用token: ${data.data.tokens_used || 0}`);
+                return data.data.response;
+            } else {
+                console.log(`❌ AI API返回格式错误 (${apiUrl})`);
+                continue; // 尝试下一个后端
+            }
+            
+        } catch (error) {
+            console.error(`❌ AI API连接失败 (${apiUrl}):`, error);
+            continue; // 尝试下一个后端
         }
-        
-        const data = await response.json();
-        
-        if (data.success && data.data.response) {
-            console.log(`✅ AI回复成功，使用token: ${data.data.tokens_used || 0}`);
-            return data.data.response;
-        } else {
-            throw new Error('API返回格式错误');
-        }
-        
-    } catch (error) {
-        console.error('调用DeepSeek API失败:', error);
-        
-        // 返回智能备用响应
-        return generateFallbackResponse(userMessage);
     }
+    
+    // 所有后端都失败，返回智能备用响应
+    console.log('❌ 所有AI后端都不可用，使用备用响应');
+    return generateFallbackResponse(userMessage);
 }
 
 // 生成智能备用响应

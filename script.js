@@ -4,15 +4,22 @@
 let isAnimating = false;
 let isMenuOpen = false;
 
-// 动态API配置
+// 动态API配置 - 支持多个后端服务
 const getApiBaseUrl = () => {
     // 如果是GitHub Pages环境
     if (window.location.hostname.includes('github.io')) {
-        return 'https://policy-pilot-viktorsdb.herokuapp.com/api/v1'; // 使用Heroku后端
+        // 优先尝试Render后端，然后降级到Heroku
+        return 'https://policy-pilot.onrender.com/api/v1';
     }
     // 本地开发环境
     return 'http://localhost:8001/api/v1';
 };
+
+// 备用API地址列表
+const BACKUP_API_URLS = [
+    'https://policy-pilot.onrender.com/api/v1',
+    'https://policy-pilot-viktorsdb.herokuapp.com/api/v1'
+];
 
 const API_BASE_URL = getApiBaseUrl();
 
@@ -541,33 +548,50 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// 检查后端服务状态
+// 检查后端服务状态 - 支持多后端尝试
 async function checkBackendStatus() {
-    try {
-        console.log('🔍 检查后端服务状态...');
-        
-        const response = await fetch(`${API_BASE_URL}/health`, {
-            method: 'GET',
-            timeout: 10000 // 10秒超时
-        });
-        
-        if (response.ok) {
-            const data = await response.json();
-            console.log('✅ 后端服务正常:', data);
-            hideBackendStatusBanner();
-        } else {
-            console.log('❌ 后端服务异常:', response.status);
-            showBackendDeploymentPrompt();
+    console.log('🔍 检查后端服务状态...');
+    
+    // 尝试所有可用的后端服务
+    for (let i = 0; i < BACKUP_API_URLS.length; i++) {
+        const apiUrl = BACKUP_API_URLS[i];
+        try {
+            console.log(`🔗 尝试连接: ${apiUrl}`);
+            
+            const response = await fetch(`${apiUrl}/health`, {
+                method: 'GET',
+                timeout: 8000 // 8秒超时
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                console.log(`✅ 后端服务正常 (${apiUrl}):`, data);
+                
+                // 更新全局API地址为可用的地址
+                window.CURRENT_API_URL = apiUrl;
+                
+                hideBackendStatusBanner();
+                showBackendStatusBanner('success', `后端服务已连接: ${apiUrl.includes('render') ? 'Render' : 'Heroku'}`);
+                
+                // 3秒后隐藏成功提示
+                setTimeout(hideBackendStatusBanner, 3000);
+                return; // 成功连接，退出函数
+            } else {
+                console.log(`❌ 后端服务异常 (${apiUrl}):`, response.status);
+            }
+        } catch (error) {
+            console.log(`❌ 后端服务连接失败 (${apiUrl}):`, error);
         }
-    } catch (error) {
-        console.log('❌ 后端服务连接失败:', error);
-        
-        // 如果是GitHub Pages环境且后端不可用，显示部署提示
-        if (window.location.hostname.includes('github.io')) {
-            showBackendDeploymentPrompt();
-        } else {
-            showBackendStatusBanner('info', '本地后端服务未启动，请运行 python real_policy_server.py');
-        }
+    }
+    
+    // 所有后端都不可用
+    console.log('❌ 所有后端服务都不可用');
+    
+    // 如果是GitHub Pages环境且后端不可用，显示部署提示
+    if (window.location.hostname.includes('github.io')) {
+        showBackendDeploymentPrompt();
+    } else {
+        showBackendStatusBanner('info', '本地后端服务未启动，请运行 python real_policy_server.py');
     }
 }
 
