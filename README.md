@@ -1,14 +1,14 @@
 # PolicyPilot - AI政策匹配平台
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/YOUR_USERNAME/policy-pilot)
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/YOUR_USERNAME/policy-pilot)
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/Viktorsdb/policy-pilot)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/Viktorsdb/policy-pilot)
 
 基于AI的智能政策匹配平台，帮助企业发现适合的政策机会。本项目提供现代化、专业的企业级政策匹配服务，支持多种云平台一键部署。
 
 ## 🚀 在线体验
 
-- **演示地址**: [https://your-app-name.herokuapp.com](https://your-app-name.herokuapp.com)
-- **GitHub仓库**: [https://github.com/YOUR_USERNAME/policy-pilot](https://github.com/YOUR_USERNAME/policy-pilot)
+- **演示地址**: [https://policy-pilot-viktorsdb.herokuapp.com](https://policy-pilot-viktorsdb.herokuapp.com)
+- **GitHub仓库**: [https://github.com/Viktorsdb/policy-pilot](https://github.com/Viktorsdb/policy-pilot)
 
 ## ✨ 核心功能
 
@@ -66,7 +66,7 @@
 ### 本地运行
 ```bash
 # 克隆仓库
-git clone https://github.com/YOUR_USERNAME/policy-pilot.git
+git clone https://github.com/Viktorsdb/policy-pilot.git
 cd policy-pilot
 
 # 安装依赖
@@ -76,7 +76,7 @@ pip install -r requirements.txt
 python real_policy_server.py
 ```
 
-访问 `http://localhost:5000` 查看应用。
+访问 `http://localhost:8000` 查看应用。
 
 ## 📁 项目结构
 
@@ -163,8 +163,8 @@ policy-pilot/
 ## 📞 技术支持
 
 - 📧 **邮箱**: support@policypilot.com
-- 🐛 **Bug报告**: [GitHub Issues](https://github.com/YOUR_USERNAME/policy-pilot/issues)
-- 💬 **讨论**: [GitHub Discussions](https://github.com/YOUR_USERNAME/policy-pilot/discussions)
+- 🐛 **Bug报告**: [GitHub Issues](https://github.com/Viktorsdb/policy-pilot/issues)
+- 💬 **讨论**: [GitHub Discussions](https://github.com/Viktorsdb/policy-pilot/discussions)
 
 ## 📄 许可证
 
@@ -178,5 +178,5 @@ policy-pilot/
 
 **让AI为您的企业发现无限可能！** ✨
 
-[![Star this repo](https://img.shields.io/github/stars/YOUR_USERNAME/policy-pilot?style=social)](https://github.com/YOUR_USERNAME/policy-pilot)
-[![Fork this repo](https://img.shields.io/github/forks/YOUR_USERNAME/policy-pilot?style=social)](https://github.com/YOUR_USERNAME/policy-pilot/fork) 
+[![Star this repo](https://img.shields.io/github/stars/Viktorsdb/policy-pilot?style=social)](https://github.com/Viktorsdb/policy-pilot)
+[![Fork this repo](https://img.shields.io/github/forks/Viktorsdb/policy-pilot?style=social)](https://github.com/Viktorsdb/policy-pilot/fork) 

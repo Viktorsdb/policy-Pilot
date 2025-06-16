@@ -1,7 +1,7 @@
 {
   "name": "PolicyPilot AI政策匹配平台",
   "description": "基于AI的智能政策匹配平台，帮助企业发现适合的政策机会",
-  "repository": "https://github.com/YOUR_USERNAME/policy-pilot",
+  "repository": "https://github.com/Viktorsdb/policy-pilot",
   "logo": "https://node-js-sample.herokuapp.com/node.png",
   "keywords": ["python", "flask", "ai", "policy", "matching"],
   "image": "heroku/python",
