@@ -1,1 +1,2 @@
-web: uvicorn real_policy_server:app --host 0.0.0.0 --port $PORT 
+web: python real_policy_server.py
+worker: python start_backend.py 

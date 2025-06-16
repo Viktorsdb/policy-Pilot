@@ -1,30 +1,37 @@
 {
   "name": "PolicyPilot AI政策匹配平台",
   "description": "基于AI的智能政策匹配平台，帮助企业发现适合的政策机会",
-  "repository": "https://github.com/Viktorsdb/policy-pilot",
-  "logo": "https://node-js-sample.herokuapp.com/node.png",
-  "keywords": ["python", "flask", "ai", "policy", "matching"],
-  "image": "heroku/python",
-  "env": {
-    "OPENAI_API_KEY": {
-      "description": "OpenAI API密钥，用于AI功能",
-      "required": false
-    },
-    "FLASK_ENV": {
-      "description": "Flask环境设置",
-      "value": "production"
-    }
-  },
-  "formation": {
-    "web": {
-      "quantity": 1,
-      "size": "free"
-    }
-  },
-  "addons": [],
+  "repository": "https://github.com/Viktorsdb/policy-Pilot",
+  "logo": "https://viktorsdb.github.io/policy-Pilot/favicon.ico",
+  "keywords": ["ai", "policy", "matching", "fastapi", "python"],
+  "stack": "heroku-22",
   "buildpacks": [
     {
       "url": "heroku/python"
     }
-  ]
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "basic"
+    }
+  },
+  "env": {
+    "DEEPSEEK_API_KEY": {
+      "description": "DeepSeek API密钥（可选，用于AI聊天功能）",
+      "required": false
+    },
+    "HOST": {
+      "description": "服务器主机地址",
+      "value": "0.0.0.0"
+    },
+    "PYTHON_VERSION": {
+      "description": "Python版本",
+      "value": "3.11.5"
+    }
+  },
+  "addons": [],
+  "scripts": {
+    "postdeploy": "echo '部署完成！PolicyPilot AI政策匹配平台已启动。'"
+  }
 } 

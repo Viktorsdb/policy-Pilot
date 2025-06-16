@@ -152,34 +152,56 @@ open index.html
 - 无需任何配置，即开即用！
 - 包含完整的备用数据和智能响应
 
-### 一键部署到Heroku
+### 🔧 后端服务部署
+
+#### 一键部署到Heroku（推荐）
 1. 点击上方"Deploy to Heroku"按钮
-2. 填写应用名称
-3. 可选：设置OPENAI_API_KEY环境变量
+2. 填写应用名称（建议：policy-pilot-你的用户名）
+3. 可选：设置DEEPSEEK_API_KEY环境变量
 4. 点击"Deploy app"
+5. 部署完成后，记录应用URL（如：https://policy-pilot-viktorsdb.herokuapp.com）
 
-### 部署到Vercel
-1. 点击"Deploy with Vercel"按钮
-2. 导入GitHub仓库
-3. 配置环境变量（可选）
-4. 部署完成
-
-### 本地运行
+#### 本地完整部署
 ```bash
 # 克隆仓库
 git clone https://github.com/Viktorsdb/policy-Pilot.git
 cd policy-Pilot
 
-# 方式1：仅前端测试
-python start_local_server.py
-
-# 方式2：完整功能（需要后端）
+# 安装依赖
 pip install -r requirements.txt
-python real_policy_server.py  # 启动后端
-python start_local_server.py  # 启动前端
+
+# 启动后端服务
+python real_policy_server.py
+# 或使用启动脚本
+python start_backend.py
+
+# 启动前端服务（新终端）
+python start_local_server.py
 ```
 
-访问 `http://localhost:8080` 查看应用。
+#### 测试部署
+```bash
+# 测试本地和远程部署
+python test_deployment.py
+```
+
+### 🌐 前端部署配置
+
+前端会自动检测运行环境：
+- **GitHub Pages**: 自动连接到Heroku后端
+- **本地开发**: 连接到localhost:8001
+
+如需修改后端地址，请编辑以下文件中的API配置：
+- `policy-dashboard.js`
+- `ai-chat.js`
+
+### 📋 环境变量配置
+
+| 变量名 | 描述 | 必需 | 默认值 |
+|--------|------|------|--------|
+| `DEEPSEEK_API_KEY` | DeepSeek API密钥 | 否 | - |
+| `PORT` | 服务端口 | 否 | 8001 |
+| `HOST` | 服务主机 | 否 | 0.0.0.0 |
 
 ## 📁 项目结构
 

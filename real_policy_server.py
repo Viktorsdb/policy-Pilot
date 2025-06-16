@@ -670,17 +670,22 @@ if __name__ == "__main__":
     print("🤖 AI功能: 调用真正的DeepSeek API")
     print("🕷️ 政策爬取: 集成真实爬取模块(real_crawler.py)，支持徐汇区真实政策链接")
     print("📋 政策数据: 7个真实徐汇区政策 + 国家级政策")
-    print("🔗 API文档: http://localhost:8001/docs")
-    print("💚 健康检查: http://localhost:8001/api/v1/health")
-    print("🎯 AI聊天: http://localhost:8001/api/v1/ai/chat")
-    print("📊 政策统计: http://localhost:8001/api/v1/policies/count")
-    print("📋 政策列表: http://localhost:8001/api/v1/policies")
-    print("📋 政策匹配: http://localhost:8001/api/v1/policies/match")
-    print("📋 增强政策: http://localhost:8001/api/v1/policies/enhanced")
-    print("🔄 爬取刷新: http://localhost:8001/api/v1/crawler/refresh")
+    
+    # 获取端口配置
+    port = int(os.getenv("PORT", 8001))
+    host = os.getenv("HOST", "0.0.0.0")
+    
+    print(f"🔗 API文档: http://localhost:{port}/docs")
+    print(f"💚 健康检查: http://localhost:{port}/api/v1/health")
+    print(f"🎯 AI聊天: http://localhost:{port}/api/v1/ai/chat")
+    print(f"📊 政策统计: http://localhost:{port}/api/v1/policies/count")
+    print(f"📋 政策列表: http://localhost:{port}/api/v1/policies")
+    print(f"📋 政策匹配: http://localhost:{port}/api/v1/policies/match")
+    print(f"📋 增强政策: http://localhost:{port}/api/v1/policies/enhanced")
+    print(f"🔄 爬取刷新: http://localhost:{port}/api/v1/crawler/refresh")
     print("-" * 60)
     
     # 初始化政策数据库
     asyncio.run(initialize_policies_database())
     
-    uvicorn.run(app, host="0.0.0.0", port=8001, log_level="info") 
+    uvicorn.run(app, host=host, port=port, log_level="info") 

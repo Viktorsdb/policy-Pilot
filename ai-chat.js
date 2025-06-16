@@ -11,7 +11,7 @@ let isConsultingPolicy = false;
 const getApiBaseUrl = () => {
     // 如果是GitHub Pages环境
     if (window.location.hostname.includes('github.io')) {
-        return 'https://policy-pilot-api.herokuapp.com/api/v1'; // 使用Heroku后端
+        return 'https://policy-pilot-viktorsdb.herokuapp.com/api/v1'; // 使用Heroku后端
     }
     // 本地开发环境
     return 'http://localhost:8001/api/v1';

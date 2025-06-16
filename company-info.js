@@ -412,45 +412,26 @@ async function submitForm() {
         // 构建企业画像数据
         const companyProfile = buildCompanyProfile();
         
-        showNotification('正在提交企业信息并进行政策匹配分析...', 'info');
+        // 保存企业信息到session storage
+        sessionStorage.setItem('companyInfo', JSON.stringify(companyProfile));
         
-        // 调用后端API进行政策匹配
-        const response = await fetch(`${API_BASE_URL}/match/simple`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(companyProfile)
-        });
+        // 模拟提交延迟
+        await new Promise(resolve => setTimeout(resolve, 1500));
         
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.detail || '政策匹配失败');
-        }
+        // 清除保存的数据
+        localStorage.removeItem('companyFormData');
         
-        const result = await response.json();
+        // 显示保存成功消息
+        showNotification('企业信息保存成功！正在为您匹配政策...', 'success');
         
-        if (result.success) {
-            // 清除保存的数据
-            localStorage.removeItem('companyFormData');
-            
-            // 保存匹配结果到session storage供政策看板使用
-            sessionStorage.setItem('companyInfo', JSON.stringify(companyProfile));
-            sessionStorage.setItem('policyMatches', JSON.stringify(result.data.matches));
-            
-            showNotification(`企业信息提交成功！匹配到 ${result.data.count} 个政策机会`, 'success');
-            
-            // 延迟跳转到政策看板
+        // 延迟跳转到政策看板
         setTimeout(() => {
-                window.location.href = 'policy-dashboard.html';
-            }, 2000);
-        } else {
-            throw new Error(result.message || '政策匹配失败');
-        }
+            window.location.href = 'policy-dashboard.html';
+        }, 2000);
         
     } catch (error) {
-        console.error('提交失败:', error);
-        showNotification(`提交失败: ${error.message}`, 'error');
+        console.error('保存失败:', error);
+        showNotification('保存失败，请重试', 'error');
         
         // 恢复按钮状态
         submitBtn.innerHTML = originalText;
