@@ -294,39 +294,41 @@ body {
 
 /* 快速回复 */
 .quick-replies {
-    padding: 20px 0;
-    margin-bottom: 20px;
+    flex-direction: column;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    gap: 4px;
 }
 
 .quick-reply-title {
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #6b7280;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     padding-left: 4px;
 }
 
 .quick-replies .quick-replies {
     display: flex;
-    gap: 10px;
+    gap: 6px;
     flex-wrap: wrap;
 }
 
 .quick-reply-btn {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
+    gap: 4px;
+    padding: 5px 10px;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 20px;
+    border-radius: 14px;
     color: #6b7280;
-    font-size: 0.875rem;
+    font-size: 0.7rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
     white-space: nowrap;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
     text-decoration: none;
 }
 
@@ -334,12 +336,12 @@ body {
     border-color: #8b5cf6;
     color: #8b5cf6;
     background: rgba(139, 92, 246, 0.05);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(139, 92, 246, 0.15);
 }
 
 .quick-reply-btn i {
-    font-size: 14px;
+    font-size: 10px;
     color: #9ca3af;
     transition: color 0.3s ease;
 }
@@ -350,22 +352,10 @@ body {
 
 /* 兼容旧的快速回复样式 */
 .quick-reply-item {
-    padding: 8px 16px;
-    background: white;
-    border: 2px solid #e5e7eb;
-    border-radius: 20px;
-    color: #6b7280;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-}
-
-.quick-reply-item:hover {
-    border-color: #8b5cf6;
-    color: #8b5cf6;
-    background: rgba(139, 92, 246, 0.05);
-    transform: translateY(-1px);
+    text-align: center;
+    white-space: normal;
+    padding: 4px 8px;
+    font-size: 0.65rem;
 }
 
 /* 输入区域 */
@@ -600,11 +590,16 @@ body {
     
     .quick-replies {
         flex-direction: column;
+        padding: 8px 0;
+        margin-bottom: 8px;
+        gap: 4px;
     }
     
     .quick-reply-item {
         text-align: center;
         white-space: normal;
+        padding: 4px 8px;
+        font-size: 0.65rem;
     }
     
     .sidebar {
