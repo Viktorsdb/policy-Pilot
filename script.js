@@ -635,7 +635,7 @@ function showBackendDeploymentPrompt() {
                 background: linear-gradient(135deg, #667eea, #764ba2);
                 color: white;
                 z-index: 10000;
-                padding: 16px 20px;
+                padding: 12px 20px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
                 transform: translateY(-100%);
                 transition: transform 0.3s ease;
@@ -654,14 +654,14 @@ function showBackendDeploymentPrompt() {
             }
             
             .banner-icon {
-                width: 50px;
-                height: 50px;
+                width: 40px;
+                height: 40px;
                 background: rgba(255, 255, 255, 0.2);
                 border-radius: 12px;
                 display: flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 24px;
+                font-size: 20px;
             }
             
             .banner-text {
@@ -670,14 +670,14 @@ function showBackendDeploymentPrompt() {
             
             .banner-text h4 {
                 margin: 0 0 4px 0;
-                font-size: 1.1rem;
+                font-size: 1rem;
                 font-weight: 600;
             }
             
             .banner-text p {
                 margin: 0;
                 opacity: 0.9;
-                font-size: 0.95rem;
+                font-size: 0.875rem;
             }
             
             .banner-actions {
@@ -690,7 +690,7 @@ function showBackendDeploymentPrompt() {
                 background: rgba(255, 255, 255, 0.2);
                 border: 1px solid rgba(255, 255, 255, 0.3);
                 color: white;
-                padding: 10px 20px;
+                padding: 8px 16px;
                 border-radius: 8px;
                 cursor: pointer;
                 font-weight: 500;
@@ -698,6 +698,7 @@ function showBackendDeploymentPrompt() {
                 align-items: center;
                 gap: 8px;
                 transition: all 0.3s ease;
+                font-size: 0.875rem;
             }
             
             .deploy-now-btn:hover {
@@ -710,7 +711,7 @@ function showBackendDeploymentPrompt() {
                 border: none;
                 color: white;
                 cursor: pointer;
-                padding: 8px;
+                padding: 6px;
                 border-radius: 6px;
                 opacity: 0.8;
                 transition: opacity 0.3s ease;
@@ -722,15 +723,38 @@ function showBackendDeploymentPrompt() {
             }
             
             @media (max-width: 768px) {
+                .deployment-banner {
+                    padding: 10px 16px;
+                }
+                
                 .banner-content {
                     flex-direction: column;
-                    gap: 15px;
+                    gap: 12px;
                     text-align: center;
+                }
+                
+                .banner-icon {
+                    width: 36px;
+                    height: 36px;
+                    font-size: 18px;
+                }
+                
+                .banner-text h4 {
+                    font-size: 0.9rem;
+                }
+                
+                .banner-text p {
+                    font-size: 0.8rem;
                 }
                 
                 .banner-actions {
                     width: 100%;
                     justify-content: center;
+                }
+                
+                .deploy-now-btn {
+                    padding: 6px 14px;
+                    font-size: 0.8rem;
                 }
             }
         `;
@@ -746,7 +770,7 @@ function showBackendDeploymentPrompt() {
     }, 100);
     
     // 调整页面内容位置
-    document.body.style.paddingTop = '80px';
+    document.body.style.paddingTop = '50px';
 }
 
 // 跳转到部署页面
