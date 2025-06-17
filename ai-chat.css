@@ -294,11 +294,14 @@ body {
 
 /* 快速回复 */
 .quick-replies {
-    flex-direction: column;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
     padding: 3px 0;
     margin-bottom: 6px;
     margin-top: 12px;
-    gap: 2px;
+    gap: 6px;
 }
 
 .quick-reply-title {
@@ -592,11 +595,14 @@ body {
     }
     
     .quick-replies {
-        flex-direction: column;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: flex-start;
         padding: 3px 0;
         margin-bottom: 6px;
         margin-top: 12px;
-        gap: 2px;
+        gap: 6px;
     }
     
     .quick-reply-item {
