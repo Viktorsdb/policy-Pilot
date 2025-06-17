@@ -297,6 +297,7 @@ body {
     flex-direction: column;
     padding: 8px 0;
     margin-bottom: 8px;
+    margin-top: 20px;
     gap: 4px;
 }
 
@@ -592,6 +593,7 @@ body {
         flex-direction: column;
         padding: 8px 0;
         margin-bottom: 8px;
+        margin-top: 20px;
         gap: 4px;
     }
     
