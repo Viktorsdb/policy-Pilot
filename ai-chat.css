@@ -98,9 +98,9 @@ body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 30px 0 20px;
+    padding: 25px 0 35px;
     border-bottom: 1px solid #e5e7eb;
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .chat-header {
@@ -295,10 +295,10 @@ body {
 /* 快速回复 */
 .quick-replies {
     flex-direction: column;
-    padding: 8px 0;
-    margin-bottom: 8px;
-    margin-top: 20px;
-    gap: 4px;
+    padding: 3px 0;
+    margin-bottom: 6px;
+    margin-top: 12px;
+    gap: 2px;
 }
 
 .quick-reply-title {
@@ -319,12 +319,12 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-    padding: 5px 10px;
+    padding: 3px 8px;
     background: white;
     border: 1px solid #e5e7eb;
-    border-radius: 14px;
+    border-radius: 12px;
     color: #6b7280;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 500;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -355,8 +355,8 @@ body {
 .quick-reply-item {
     text-align: center;
     white-space: normal;
-    padding: 4px 8px;
-    font-size: 0.65rem;
+    padding: 2px 6px;
+    font-size: 0.6rem;
 }
 
 /* 输入区域 */
@@ -579,6 +579,8 @@ body {
         flex-direction: column;
         text-align: center;
         gap: 12px;
+        padding-bottom: 30px;
+        margin-bottom: 25px;
     }
     
     .chat-status {
@@ -591,17 +593,17 @@ body {
     
     .quick-replies {
         flex-direction: column;
-        padding: 8px 0;
-        margin-bottom: 8px;
-        margin-top: 20px;
-        gap: 4px;
+        padding: 3px 0;
+        margin-bottom: 6px;
+        margin-top: 12px;
+        gap: 2px;
     }
     
     .quick-reply-item {
         text-align: center;
         white-space: normal;
-        padding: 4px 8px;
-        font-size: 0.65rem;
+        padding: 2px 6px;
+        font-size: 0.6rem;
     }
     
     .sidebar {
@@ -637,7 +639,8 @@ body {
 
 @media (max-width: 480px) {
     .chat-header {
-        padding: 20px 0 15px;
+        padding: 20px 0 30px;
+        margin-bottom: 20px;
     }
     
     .chat-info h1.chat-title {
